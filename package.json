@@ -1,6 +1,7 @@
 {
   "name": "gemini-game-suite",
   "version": "0.0.1",
+  "author": "neohope <neohope@yahoo.com>",
   "main": "out/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
