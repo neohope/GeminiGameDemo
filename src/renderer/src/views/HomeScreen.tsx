@@ -23,6 +23,7 @@ const HomeScreen: React.FC<Props> = ({ onSelectGame }) => {
         <GameCard icon="帥" name="Chinese Chess" subtitle="中国象棋" onClick={() => onSelectGame('chinese_chess')} />
         <GameCard icon="弈" name="Go" subtitle="围棋" onClick={() => onSelectGame('go')} />
         <GameCard icon="♔" name="Chess" subtitle="国际象棋" onClick={() => onSelectGame('chess')} />
+        <GameCard icon="🔢" name="Sudoku" subtitle="数独" onClick={() => onSelectGame('sudoku')} />
       </div>
     </div>
   );

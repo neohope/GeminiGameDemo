@@ -1,4 +1,5 @@
 import React from 'react';
+import SudokuBoard from '../components/SudokuBoard';
 import GomokuBoard from '../components/GomokuBoard';
 import ChineseChessBoard from '../components/ChineseChessBoard';
 import GoBoard from '../components/GoBoard';
@@ -20,6 +21,7 @@ const GameScreen: React.FC<Props> = ({ game, onBack }) => {
         {game === 'chinese_chess' && <ChineseChessBoard />}
         {game === 'go' && <GoBoard />}
         {game === 'chess' && <ChessBoard />}
+        {game === 'sudoku' && <SudokuBoard />}
       </div>
     </div>
   );

@@ -5,8 +5,8 @@ import fs from 'fs';
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 1280,
-    height: 800,
+    width: 1400,
+    height: 900,
     webPreferences: {
       preload: path.join(__dirname, '../preload/index.js'),
       sandbox: false
