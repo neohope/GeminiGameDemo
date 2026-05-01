@@ -1,9 +1,9 @@
-# Gemini Game Suite - Flutter 重写设计文档
+# Neo Game Suite - Flutter 重写设计文档
 
 ## 1. 项目概述
 
 ### 1.1 项目背景
-Gemini Game Suite 是一个经典桌面游戏合集，原项目使用 Electron + React 开发。本次重写使用 Flutter 框架，以实现更好的跨平台兼容性和性能。
+Neo Game Suite 是一个经典桌面游戏合集，原项目使用 Electron + React 开发。本次重写使用 Flutter 框架，以实现更好的跨平台兼容性和性能。
 
 ### 1.2 支持平台
 - **桌面端**: Windows, macOS, Linux

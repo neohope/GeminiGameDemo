@@ -1,5 +1,5 @@
 class AppConstants {
-  static const String appName = 'Gemini Game Suite';
+  static const String appName = 'Neo Game Suite';
 
   // 路由路径
   static const String homePath = '/';

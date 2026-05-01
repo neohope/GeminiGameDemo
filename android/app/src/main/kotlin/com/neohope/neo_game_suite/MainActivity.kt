@@ -1,4 +1,4 @@
-package com.neohope.gemini_game_suite
+package com.neohope.neo_game_suite
 
 import io.flutter.embedding.android.FlutterActivity
 

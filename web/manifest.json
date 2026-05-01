@@ -1,6 +1,6 @@
 {
-    "name": "gemini_game_suite",
-    "short_name": "gemini_game_suite",
+    "name": "neo_game_suite",
+    "short_name": "neo_game_suite",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
