@@ -25,7 +25,8 @@ class Game2048Page extends ConsumerWidget {
               onMove: (direction) => notifier.move(direction),
             ),
           ),
-          if (state.board.gameOver || state.board.isWin) _buildGameOver(context, state, notifier),
+          if (state.board.gameOver || state.board.isWin)
+            _buildGameOver(context, state, notifier),
           const SizedBox(height: 16),
           _buildControlBar(context, ref, state, notifier),
           const SizedBox(height: 16),
@@ -34,7 +35,11 @@ class Game2048Page extends ConsumerWidget {
     );
   }
 
-  Widget _buildScoreBoard(BuildContext context, Game2048State state, Game2048Notifier notifier) {
+  Widget _buildScoreBoard(
+    BuildContext context,
+    Game2048State state,
+    Game2048Notifier notifier,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -48,7 +53,11 @@ class Game2048Page extends ConsumerWidget {
     );
   }
 
-  Widget _buildGameOver(BuildContext context, Game2048State state, Game2048Notifier notifier) {
+  Widget _buildGameOver(
+    BuildContext context,
+    Game2048State state,
+    Game2048Notifier notifier,
+  ) {
     final isWin = state.board.isWin && !state.board.gameOver;
     return Container(
       padding: const EdgeInsets.all(16),
@@ -68,7 +77,12 @@ class Game2048Page extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, WidgetRef ref, Game2048State state, Game2048Notifier notifier) {
+  Widget _buildControlBar(
+    BuildContext context,
+    WidgetRef ref,
+    Game2048State state,
+    Game2048Notifier notifier,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(

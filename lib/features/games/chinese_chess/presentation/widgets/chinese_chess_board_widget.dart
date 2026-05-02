@@ -21,16 +21,17 @@ class ChineseChessBoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boardSize = ResponsiveLayout.boardSize(context, maxSize: 700);
-    const sidePadding = 20.0;
-    final cellSize = (boardSize - sidePadding * 2) / 8;
+    final cellSize = boardSize / 8;
+    final sidePadding = cellSize * 0.5;
     final topBottomPadding = cellSize * 0.5;
+    final boardWidth = cellSize * 8 + sidePadding * 2;
     final boardHeight = cellSize * 9 + topBottomPadding * 2;
 
     return Center(
       child: FittedBox(
         fit: BoxFit.contain,
         child: SizedBox(
-          width: boardSize,
+          width: boardWidth,
           height: boardHeight,
           child: Container(
             decoration: BoxDecoration(

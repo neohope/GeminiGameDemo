@@ -44,7 +44,6 @@ class ChessBoardWidget extends StatelessWidget {
   }
 
   Widget _buildGrid(double boardSize) {
-    final cellSize = boardSize / 8;
     return CustomPaint(
       size: Size(boardSize, boardSize),
       child: SizedBox.expand(
@@ -90,7 +89,13 @@ class ChessBoardWidget extends StatelessWidget {
               width: cellSize,
               height: cellSize,
               child: Center(
-                child: Text(unicode, style: TextStyle(fontSize: fontSize)),
+                child: Text(
+                  unicode,
+                  style: TextStyle(
+                    fontSize: fontSize,
+                    color: piece.color == whitePlayer ? Colors.white : Colors.black,
+                  ),
+                ),
               ),
             ),
           ));
