@@ -21,9 +21,10 @@ class ChineseChessBoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boardSize = ResponsiveLayout.boardSize(context, maxSize: 700);
-    const padding = 20.0;
-    final cellSize = (boardSize - padding * 2) / 8;
-    final boardHeight = cellSize * 9 + padding * 2;
+    const sidePadding = 20.0;
+    final cellSize = (boardSize - sidePadding * 2) / 8;
+    final topBottomPadding = cellSize * 0.5;
+    final boardHeight = cellSize * 9 + topBottomPadding * 2;
 
     return Center(
       child: FittedBox(
@@ -38,11 +39,11 @@ class ChineseChessBoardWidget extends StatelessWidget {
               border: Border.all(color: Colors.brown, width: 2),
             ),
             child: GestureDetector(
-              onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
+              onTapDown: enabled ? (details) => _handleTap(details, cellSize, sidePadding, topBottomPadding) : null,
               child: CustomPaint(
-                painter: _ChineseChessGridPainter(cellSize: cellSize, padding: padding),
+                painter: _ChineseChessGridPainter(cellSize: cellSize, sidePadding: sidePadding, topBottomPadding: topBottomPadding),
                 child: Stack(
-                  children: _buildPieces(cellSize, padding),
+                  children: _buildPieces(cellSize, sidePadding, topBottomPadding),
                 ),
               ),
             ),
@@ -52,22 +53,22 @@ class ChineseChessBoardWidget extends StatelessWidget {
     );
   }
 
-  void _handleTap(TapDownDetails details, double cellSize, double padding) {
+  void _handleTap(TapDownDetails details, double cellSize, double sidePadding, double topBottomPadding) {
     final localPosition = details.localPosition;
-    final x = ((localPosition.dx - padding) / cellSize).round();
-    final y = ((localPosition.dy - padding) / cellSize).round();
+    final x = ((localPosition.dx - sidePadding) / cellSize).round();
+    final y = ((localPosition.dy - topBottomPadding) / cellSize).round();
 
     if (x >= 0 && x < 9 && y >= 0 && y < 10) {
       onCellTap(x, y);
     }
   }
 
-  List<Widget> _buildPieces(double cellSize, double padding) {
+  List<Widget> _buildPieces(double cellSize, double sidePadding, double topBottomPadding) {
     final widgets = <Widget>[];
     for (final piece in board.pieces) {
       final isSelected = selectedPiece != null && selectedPiece!.id == piece.id;
-      final centerX = padding + piece.x * cellSize;
-      final centerY = padding + piece.y * cellSize;
+      final centerX = sidePadding + piece.x * cellSize;
+      final centerY = topBottomPadding + piece.y * cellSize;
       final pieceSize = cellSize * 0.85;
 
       widgets.add(Positioned(
@@ -112,9 +113,10 @@ class ChineseChessBoardWidget extends StatelessWidget {
 
 class _ChineseChessGridPainter extends CustomPainter {
   final double cellSize;
-  final double padding;
+  final double sidePadding;
+  final double topBottomPadding;
 
-  _ChineseChessGridPainter({required this.cellSize, required this.padding});
+  _ChineseChessGridPainter({required this.cellSize, required this.sidePadding, required this.topBottomPadding});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -123,62 +125,62 @@ class _ChineseChessGridPainter extends CustomPainter {
       ..strokeWidth = 1.5;
 
     for (int i = 0; i < 10; i++) {
-      final y = padding + i * cellSize;
+      final y = topBottomPadding + i * cellSize;
       canvas.drawLine(
-        Offset(padding, y),
-        Offset(padding + 8 * cellSize, y),
+        Offset(sidePadding, y),
+        Offset(sidePadding + 8 * cellSize, y),
         paint,
       );
     }
 
     for (int i = 0; i < 9; i++) {
-      final x = padding + i * cellSize;
+      final x = sidePadding + i * cellSize;
       canvas.drawLine(
-        Offset(x, padding),
-        Offset(x, padding + 4 * cellSize),
+        Offset(x, topBottomPadding),
+        Offset(x, topBottomPadding + 4 * cellSize),
         paint,
       );
     }
 
     for (int i = 0; i < 9; i++) {
-      final x = padding + i * cellSize;
+      final x = sidePadding + i * cellSize;
       canvas.drawLine(
-        Offset(x, padding + 5 * cellSize),
-        Offset(x, padding + 9 * cellSize),
+        Offset(x, topBottomPadding + 5 * cellSize),
+        Offset(x, topBottomPadding + 9 * cellSize),
         paint,
       );
     }
 
     canvas.drawLine(
-      Offset(padding, padding),
-      Offset(padding, padding + 9 * cellSize),
+      Offset(sidePadding, topBottomPadding),
+      Offset(sidePadding, topBottomPadding + 9 * cellSize),
       paint,
     );
     canvas.drawLine(
-      Offset(padding + 8 * cellSize, padding),
-      Offset(padding + 8 * cellSize, padding + 9 * cellSize),
-      paint,
-    );
-
-    canvas.drawLine(
-      Offset(padding + 3 * cellSize, padding),
-      Offset(padding + 5 * cellSize, padding + 2 * cellSize),
-      paint,
-    );
-    canvas.drawLine(
-      Offset(padding + 5 * cellSize, padding),
-      Offset(padding + 3 * cellSize, padding + 2 * cellSize),
+      Offset(sidePadding + 8 * cellSize, topBottomPadding),
+      Offset(sidePadding + 8 * cellSize, topBottomPadding + 9 * cellSize),
       paint,
     );
 
     canvas.drawLine(
-      Offset(padding + 3 * cellSize, padding + 7 * cellSize),
-      Offset(padding + 5 * cellSize, padding + 9 * cellSize),
+      Offset(sidePadding + 3 * cellSize, topBottomPadding),
+      Offset(sidePadding + 5 * cellSize, topBottomPadding + 2 * cellSize),
       paint,
     );
     canvas.drawLine(
-      Offset(padding + 5 * cellSize, padding + 7 * cellSize),
-      Offset(padding + 3 * cellSize, padding + 9 * cellSize),
+      Offset(sidePadding + 5 * cellSize, topBottomPadding),
+      Offset(sidePadding + 3 * cellSize, topBottomPadding + 2 * cellSize),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(sidePadding + 3 * cellSize, topBottomPadding + 7 * cellSize),
+      Offset(sidePadding + 5 * cellSize, topBottomPadding + 9 * cellSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(sidePadding + 5 * cellSize, topBottomPadding + 7 * cellSize),
+      Offset(sidePadding + 3 * cellSize, topBottomPadding + 9 * cellSize),
       paint,
     );
 
@@ -196,11 +198,11 @@ class _ChineseChessGridPainter extends CustomPainter {
     textPainter.layout();
 
     final textX = (size.width - textPainter.width) / 2;
-    final textY = padding + 4 * cellSize + (cellSize - textPainter.height) / 2;
+    final textY = topBottomPadding + 4 * cellSize + (cellSize - textPainter.height) / 2;
     textPainter.paint(canvas, Offset(textX, textY));
   }
 
   @override
   bool shouldRepaint(_ChineseChessGridPainter oldDelegate) =>
-      oldDelegate.cellSize != cellSize || oldDelegate.padding != padding;
+      oldDelegate.cellSize != cellSize || oldDelegate.sidePadding != sidePadding || oldDelegate.topBottomPadding != topBottomPadding;
 }
