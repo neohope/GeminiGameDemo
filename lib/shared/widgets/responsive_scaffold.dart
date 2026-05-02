@@ -19,7 +19,7 @@ class ResponsiveScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.showBackButton = true,
-    this.toolbarHeight = kToolbarHeight * 0.85,
+    this.toolbarHeight = kToolbarHeight * 0.6,
   });
 
   @override
