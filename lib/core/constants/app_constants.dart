@@ -8,6 +8,7 @@ class AppConstants {
   static const String goPath = '/go';
   static const String chessPath = '/chess';
   static const String sudokuPath = '/sudoku';
+  static const String game2048Path = '/game2048';
 }
 
 enum GameMode {

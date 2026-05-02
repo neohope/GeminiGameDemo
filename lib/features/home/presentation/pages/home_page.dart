@@ -63,6 +63,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Sudoku',
             onTap: () => context.push(AppConstants.sudokuPath),
           ),
+          GameCard(
+            icon: '2048',
+            title: '2048',
+            subtitle: 'Number Game',
+            onTap: () => context.push(AppConstants.game2048Path),
+          ),
         ],
       ),
     );

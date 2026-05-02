@@ -6,6 +6,7 @@ import 'package:neo_game_suit/features/games/chinese_chess/presentation/pages/ch
 import 'package:neo_game_suit/features/games/go/presentation/pages/go_page.dart';
 import 'package:neo_game_suit/features/games/chess/presentation/pages/chess_page.dart';
 import 'package:neo_game_suit/features/games/sudoku/presentation/pages/sudoku_page.dart';
+import 'package:neo_game_suit/features/games/game2048/presentation/pages/game2048_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -39,6 +40,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.sudokuPath,
       name: 'sudoku',
       builder: (context, state) => const SudokuPage(),
+    ),
+    GoRoute(
+      path: AppConstants.game2048Path,
+      name: 'game2048',
+      builder: (context, state) => const Game2048Page(),
     ),
   ],
 );
