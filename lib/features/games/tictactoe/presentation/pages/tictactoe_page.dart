@@ -44,16 +44,16 @@ class TicTacToePage extends ConsumerWidget {
     if (board.status == GameStatus.playing) {
       if (board.mode == GameMode.hva) {
         final isHumanTurn = board.currentPlayer == board.humanPlayer;
-        text = isHumanTurn ? 'Your Turn (${board.currentPlayer == Player.x ? 'X' : 'O'})' : 'AI Thinking...';
+        text = isHumanTurn ? '你的回合 (${board.currentPlayer == Player.x ? 'X' : 'O'})' : 'AI 思考中...';
       } else {
-        text = '${board.currentPlayer == Player.x ? 'X' : 'O'}\'s Turn';
+        text = '${board.currentPlayer == Player.x ? 'X' : 'O'} 的回合';
       }
     } else if (board.status == GameStatus.xWon) {
-      text = 'X Wins!';
+      text = 'X 获胜！';
     } else if (board.status == GameStatus.oWon) {
-      text = 'O Wins!';
+      text = 'O 获胜！';
     } else {
-      text = 'Draw!';
+      text = '平局！';
     }
 
     return Padding(
@@ -68,11 +68,11 @@ class TicTacToePage extends ConsumerWidget {
   Widget _buildGameOver(BuildContext context, TicTacToeBoard board, TicTacToeNotifier notifier) {
     String message;
     if (board.status == GameStatus.xWon) {
-      message = 'X Wins!';
+      message = 'X 获胜！';
     } else if (board.status == GameStatus.oWon) {
-      message = 'O Wins!';
+      message = 'O 获胜！';
     } else {
-      message = 'It\'s a Draw!';
+      message = '平局！';
     }
 
     return Container(
@@ -101,12 +101,12 @@ class TicTacToePage extends ConsumerWidget {
               ElevatedButton.icon(
                 onPressed: () => _showModeSelection(context, notifier),
                 icon: const Icon(Icons.settings),
-                label: const Text('Game Mode'),
+                label: const Text('游戏模式'),
               ),
               ElevatedButton.icon(
                 onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
                 icon: const Icon(Icons.refresh),
-                label: const Text('New Game'),
+                label: const Text('新游戏'),
               ),
             ],
           ),
@@ -119,26 +119,26 @@ class TicTacToePage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Select Game Mode'),
+        title: const Text('选择游戏模式'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Human vs Human'),
+              title: const Text('双人对战'),
               onTap: () {
                 notifier.reset(mode: GameMode.hvh);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: const Text('Human vs AI (Play as X)'),
+              title: const Text('人机对战（你执 X）'),
               onTap: () {
                 notifier.reset(mode: GameMode.hva, humanPlayer: Player.x);
                 Navigator.pop(context);
               },
             ),
             ListTile(
-              title: const Text('Human vs AI (Play as O)'),
+              title: const Text('人机对战（你执 O）'),
               onTap: () {
                 notifier.reset(mode: GameMode.hva, humanPlayer: Player.o);
                 // AI plays first as X

@@ -24,7 +24,7 @@ class TicTacToeBoardWidget extends StatelessWidget {
           width: boardSize,
           height: boardSize,
           decoration: BoxDecoration(
-            color: const Color(0xFF1A1A2E),
+            color: const Color(0xFFE8EAF6),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Stack(
@@ -47,18 +47,18 @@ class TicTacToeBoardWidget extends StatelessWidget {
           left: cellSize,
           top: 0,
           child: Container(
-            width: 4,
+            width: 3,
             height: boardSize,
-            color: const Color(0xFF0F3460),
+            color: const Color(0xFF9FA8DA),
           ),
         ),
         Positioned(
           left: cellSize * 2,
           top: 0,
           child: Container(
-            width: 4,
+            width: 3,
             height: boardSize,
-            color: const Color(0xFF0F3460),
+            color: const Color(0xFF9FA8DA),
           ),
         ),
         // Horizontal lines
@@ -67,8 +67,8 @@ class TicTacToeBoardWidget extends StatelessWidget {
           top: cellSize,
           child: Container(
             width: boardSize,
-            height: 4,
-            color: const Color(0xFF0F3460),
+            height: 3,
+            color: const Color(0xFF9FA8DA),
           ),
         ),
         Positioned(
@@ -76,8 +76,8 @@ class TicTacToeBoardWidget extends StatelessWidget {
           top: cellSize * 2,
           child: Container(
             width: boardSize,
-            height: 4,
-            color: const Color(0xFF0F3460),
+            height: 3,
+            color: const Color(0xFF9FA8DA),
           ),
         ),
       ],
@@ -108,8 +108,8 @@ class TicTacToeBoardWidget extends StatelessWidget {
                             fontSize: cellSize * 0.6,
                             fontWeight: FontWeight.bold,
                             color: isWinningTile
-                                ? const Color(0xFFE94560)
-                                : (player == Player.x ? const Color(0xFFE94560) : const Color(0xFF0F3460)),
+                                ? const Color(0xFFFF5252)
+                                : (player == Player.x ? const Color(0xFF3949AB) : const Color(0xFF66BB6A)),
                           ),
                         )
                       : null,
@@ -150,7 +150,7 @@ class _WinningLinePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFE94560)
+      ..color = const Color(0xFFFF5252)
       ..strokeWidth = 6
       ..strokeCap = StrokeCap.round;
 
