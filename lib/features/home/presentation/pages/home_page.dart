@@ -111,6 +111,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Flappy Bird',
             onTap: () => context.push(AppConstants.flappyBirdPath),
           ),
+          GameCard(
+            icon: '🧱',
+            title: '俄罗斯方块',
+            subtitle: 'Tetris',
+            onTap: () => context.push(AppConstants.tetrisPath),
+          ),
         ],
       ),
     );

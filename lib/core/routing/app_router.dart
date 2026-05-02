@@ -14,6 +14,7 @@ import 'package:neo_game_suit/features/games/huarongdao/presentation/pages/huaro
 import 'package:neo_game_suit/features/games/minesweeper/presentation/pages/minesweeper_page.dart';
 import 'package:neo_game_suit/features/games/whackamole/presentation/pages/whackamole_page.dart';
 import 'package:neo_game_suit/features/games/flappybird/presentation/pages/flappybird_page.dart';
+import 'package:neo_game_suit/features/games/tetris/presentation/pages/tetris_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -87,6 +88,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.flappyBirdPath,
       name: 'flappybird',
       builder: (context, state) => const FlappyBirdPage(),
+    ),
+    GoRoute(
+      path: AppConstants.tetrisPath,
+      name: 'tetris',
+      builder: (context, state) => const TetrisPage(),
     ),
   ],
 );
