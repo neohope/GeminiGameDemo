@@ -236,11 +236,12 @@ class _ControlButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
       child: Container(
-        width: 42,
-        height: 42,
+        width: 48,
+        height: 48,
         decoration: BoxDecoration(
           color: onTap == null ? Colors.grey : const Color(0xFF333333),
           borderRadius: BorderRadius.circular(6),
@@ -248,7 +249,7 @@ class _ControlButton extends StatelessWidget {
         child: Center(
           child: Icon(
             icon,
-            size: 24,
+            size: 28,
             color: Colors.white,
           ),
         ),
