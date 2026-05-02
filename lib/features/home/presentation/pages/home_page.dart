@@ -87,6 +87,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Reversi',
             onTap: () => context.push(AppConstants.reversiPath),
           ),
+          GameCard(
+            icon: '🏯',
+            title: '华容道',
+            subtitle: 'Huarongdao',
+            onTap: () => context.push(AppConstants.huarongdaoPath),
+          ),
         ],
       ),
     );

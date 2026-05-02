@@ -10,6 +10,7 @@ import 'package:neo_game_suit/features/games/game2048/presentation/pages/game204
 import 'package:neo_game_suit/features/games/snake/presentation/pages/snake_page.dart';
 import 'package:neo_game_suit/features/games/tictactoe/presentation/pages/tictactoe_page.dart';
 import 'package:neo_game_suit/features/games/reversi/presentation/pages/reversi_page.dart';
+import 'package:neo_game_suit/features/games/huarongdao/presentation/pages/huarongdao_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -63,6 +64,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.reversiPath,
       name: 'reversi',
       builder: (context, state) => const ReversiPage(),
+    ),
+    GoRoute(
+      path: AppConstants.huarongdaoPath,
+      name: 'huarongdao',
+      builder: (context, state) => const HuarongdaoPage(),
     ),
   ],
 );
