@@ -10,6 +10,7 @@ class AppConstants {
   static const String sudokuPath = '/sudoku';
   static const String game2048Path = '/game2048';
   static const String snakePath = '/snake';
+  static const String ticTacToePath = '/tictactoe';
 }
 
 enum GameMode {
