@@ -39,11 +39,11 @@ class ResponsiveLayout extends StatelessWidget {
   static bool isLargeScreen(BuildContext context) =>
       getScreenSize(context) == ScreenSize.large;
 
-  static double boardSize(BuildContext context, {double maxSize = 800}) {
+  static double boardSize(BuildContext context, {double maxSize = 1000}) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final availableSize = screenWidth < screenHeight ? screenWidth : screenHeight;
-    return (availableSize * 0.95).clamp(200.0, maxSize);
+    return (availableSize * 0.98).clamp(200.0, maxSize);
   }
 
   @override

@@ -22,7 +22,7 @@ class SudokuBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 500);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 700);
     final cellSize = boardSize / 9;
 
     return Center(

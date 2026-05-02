@@ -18,7 +18,7 @@ class ChessBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 480);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 700);
     final cellSize = boardSize / 8;
 
     return Center(

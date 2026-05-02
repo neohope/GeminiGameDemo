@@ -18,7 +18,7 @@ class GoBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 550);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 750);
     const padding = 20.0;
     final cellSize = (boardSize - padding * 2) / 18;
 

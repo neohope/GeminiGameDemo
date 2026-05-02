@@ -17,7 +17,7 @@ class TetrisPage extends ConsumerWidget {
       title: '俄罗斯方块',
       body: Column(
         children: [
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           // Top info area
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -28,12 +28,12 @@ class TetrisPage extends ConsumerWidget {
                   children: [
                     const Text(
                       '分数',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
                     ),
                     Text(
                       '${board.score}',
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -44,9 +44,9 @@ class TetrisPage extends ConsumerWidget {
                   children: [
                     const Text(
                       '下一个',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 2),
                     TetrisNextPieceWidget(board: board),
                   ],
                 ),
@@ -54,12 +54,12 @@ class TetrisPage extends ConsumerWidget {
                   children: [
                     const Text(
                       '等级',
-                      style: TextStyle(fontSize: 12, color: Colors.grey),
+                      style: TextStyle(fontSize: 11, color: Colors.grey),
                     ),
                     Text(
                       '${board.level}',
                       style: const TextStyle(
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -68,7 +68,7 @@ class TetrisPage extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
           // Game board
           Expanded(
             child: TetrisBoardWidget(board: board),
@@ -109,7 +109,7 @@ class TetrisPage extends ConsumerWidget {
             ),
           // Control buttons
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
             child: Column(
               children: [
                 // Directional controls
@@ -120,48 +120,48 @@ class TetrisPage extends ConsumerWidget {
                       onTap: board.status == GameStatus.playing ? notifier.moveLeft : null,
                       icon: Icons.keyboard_arrow_left,
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     Column(
                       children: [
                         _ControlButton(
                           onTap: board.status == GameStatus.playing ? notifier.rotate : null,
                           icon: Icons.rotate_right,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         _ControlButton(
                           onTap: board.status == GameStatus.playing ? notifier.moveDown : null,
                           icon: Icons.keyboard_arrow_down,
                         ),
                       ],
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 6),
                     _ControlButton(
                       onTap: board.status == GameStatus.playing ? notifier.moveRight : null,
                       icon: Icons.keyboard_arrow_right,
                     ),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 // Action buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                Wrap(
+                  spacing: 4,
+                  runSpacing: 4,
+                  alignment: WrapAlignment.center,
                   children: [
                     ElevatedButton.icon(
                       onPressed: () => notifier.hardDrop(),
-                      icon: const Icon(Icons.south),
-                      label: const Text('硬降'),
+                      icon: const Icon(Icons.south, size: 18),
+                      label: const Text('硬降', style: TextStyle(fontSize: 12)),
                     ),
-                    const SizedBox(width: 8),
                     ElevatedButton.icon(
                       onPressed: () => notifier.startGame(),
-                      icon: Icon(board.status == GameStatus.paused ? Icons.play_arrow : Icons.refresh),
-                      label: Text(board.status == GameStatus.paused ? '继续' : '开始'),
+                      icon: Icon(board.status == GameStatus.paused ? Icons.play_arrow : Icons.refresh, size: 18),
+                      label: Text(board.status == GameStatus.paused ? '继续' : '开始', style: const TextStyle(fontSize: 12)),
                     ),
-                    const SizedBox(width: 8),
                     ElevatedButton.icon(
                       onPressed: () => _showDifficulty(context, ref, notifier),
-                      icon: const Icon(Icons.settings),
-                      label: const Text('难度'),
+                      icon: const Icon(Icons.settings, size: 18),
+                      label: const Text('难度', style: TextStyle(fontSize: 12)),
                     ),
                   ],
                 ),
@@ -218,16 +218,16 @@ class _ControlButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 48,
-        height: 48,
+        width: 42,
+        height: 42,
         decoration: BoxDecoration(
           color: onTap == null ? Colors.grey : const Color(0xFF333333),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Center(
           child: Icon(
             icon,
-            size: 28,
+            size: 24,
             color: Colors.white,
           ),
         ),

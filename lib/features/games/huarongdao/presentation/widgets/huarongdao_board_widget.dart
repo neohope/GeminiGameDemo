@@ -14,7 +14,7 @@ class HuarongdaoBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 450);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 650);
     final cellSize = boardSize / 4;
 
     return Center(
