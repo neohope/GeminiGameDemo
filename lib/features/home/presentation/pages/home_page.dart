@@ -34,16 +34,22 @@ class HomePage extends StatelessWidget {
         mainAxisSpacing: 16,
         children: [
           GameCard(
+            icon: '⭕',
+            title: '井字棋',
+            subtitle: 'Tic Tac Toe',
+            onTap: () => context.push(AppConstants.ticTacToePath),
+          ),
+          GameCard(
+            icon: '⚫',
+            title: '黑白棋',
+            subtitle: 'Reversi',
+            onTap: () => context.push(AppConstants.reversiPath),
+          ),
+          GameCard(
             icon: '⚫',
             title: '五子棋',
             subtitle: 'Gomoku',
             onTap: () => context.push(AppConstants.gomokuPath),
-          ),
-          GameCard(
-            icon: '帥',
-            title: '中国象棋',
-            subtitle: 'Chinese Chess',
-            onTap: () => context.push(AppConstants.chineseChessPath),
           ),
           GameCard(
             icon: '弈',
@@ -52,10 +58,22 @@ class HomePage extends StatelessWidget {
             onTap: () => context.push(AppConstants.goPath),
           ),
           GameCard(
+            icon: '帥',
+            title: '中国象棋',
+            subtitle: 'Chinese Chess',
+            onTap: () => context.push(AppConstants.chineseChessPath),
+          ),
+          GameCard(
             icon: '♔',
             title: '国际象棋',
             subtitle: 'Chess',
             onTap: () => context.push(AppConstants.chessPath),
+          ),
+          GameCard(
+            icon: '💣',
+            title: '扫雷',
+            subtitle: 'Minesweeper',
+            onTap: () => context.push(AppConstants.minesweeperPath),
           ),
           GameCard(
             icon: '🔢',
@@ -70,40 +88,22 @@ class HomePage extends StatelessWidget {
             onTap: () => context.push(AppConstants.game2048Path),
           ),
           GameCard(
-            icon: '🐍',
-            title: '贪吃蛇',
-            subtitle: 'Snake',
-            onTap: () => context.push(AppConstants.snakePath),
-          ),
-          GameCard(
-            icon: '⭕',
-            title: '井字棋',
-            subtitle: 'Tic Tac Toe',
-            onTap: () => context.push(AppConstants.ticTacToePath),
-          ),
-          GameCard(
-            icon: '⚫',
-            title: '黑白棋',
-            subtitle: 'Reversi',
-            onTap: () => context.push(AppConstants.reversiPath),
-          ),
-          GameCard(
             icon: '🏯',
             title: '华容道',
             subtitle: 'Huarongdao',
             onTap: () => context.push(AppConstants.huarongdaoPath),
           ),
           GameCard(
-            icon: '💣',
-            title: '扫雷',
-            subtitle: 'Minesweeper',
-            onTap: () => context.push(AppConstants.minesweeperPath),
-          ),
-          GameCard(
             icon: '🔨',
             title: '打地鼠',
             subtitle: 'Whack-a-Mole',
             onTap: () => context.push(AppConstants.whackAMolePath),
+          ),
+          GameCard(
+            icon: '🐍',
+            title: '贪吃蛇',
+            subtitle: 'Snake',
+            onTap: () => context.push(AppConstants.snakePath),
           ),
           GameCard(
             icon: '🐦',
