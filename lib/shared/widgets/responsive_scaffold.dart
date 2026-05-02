@@ -9,6 +9,7 @@ class ResponsiveScaffold extends StatelessWidget {
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
   final bool showBackButton;
+  final double? toolbarHeight;
 
   const ResponsiveScaffold({
     super.key,
@@ -18,6 +19,7 @@ class ResponsiveScaffold extends StatelessWidget {
     this.bottomNavigationBar,
     this.floatingActionButton,
     this.showBackButton = true,
+    this.toolbarHeight = kToolbarHeight * 0.85,
   });
 
   @override
@@ -28,6 +30,7 @@ class ResponsiveScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: actions,
+        toolbarHeight: toolbarHeight,
         leading: showBackButton
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
