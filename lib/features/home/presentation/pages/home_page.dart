@@ -69,6 +69,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Number Game',
             onTap: () => context.push(AppConstants.game2048Path),
           ),
+          GameCard(
+            icon: '🐍',
+            title: '贪吃蛇',
+            subtitle: 'Snake',
+            onTap: () => context.push(AppConstants.snakePath),
+          ),
         ],
       ),
     );
