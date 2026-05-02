@@ -12,6 +12,7 @@ import 'package:neo_game_suit/features/games/tictactoe/presentation/pages/tictac
 import 'package:neo_game_suit/features/games/reversi/presentation/pages/reversi_page.dart';
 import 'package:neo_game_suit/features/games/huarongdao/presentation/pages/huarongdao_page.dart';
 import 'package:neo_game_suit/features/games/minesweeper/presentation/pages/minesweeper_page.dart';
+import 'package:neo_game_suit/features/games/whackamole/presentation/pages/whackamole_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -75,6 +76,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.minesweeperPath,
       name: 'minesweeper',
       builder: (context, state) => const MinesweeperPage(),
+    ),
+    GoRoute(
+      path: AppConstants.whackAMolePath,
+      name: 'whackamole',
+      builder: (context, state) => const WhackAMolePage(),
     ),
   ],
 );

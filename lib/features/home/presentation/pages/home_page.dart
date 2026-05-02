@@ -99,6 +99,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Minesweeper',
             onTap: () => context.push(AppConstants.minesweeperPath),
           ),
+          GameCard(
+            icon: '🔨',
+            title: '打地鼠',
+            subtitle: 'Whack-a-Mole',
+            onTap: () => context.push(AppConstants.whackAMolePath),
+          ),
         ],
       ),
     );

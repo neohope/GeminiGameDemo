@@ -14,6 +14,7 @@ class AppConstants {
   static const String reversiPath = '/reversi';
   static const String huarongdaoPath = '/huarongdao';
   static const String minesweeperPath = '/minesweeper';
+  static const String whackAMolePath = '/whackamole';
 }
 
 enum GameMode {
