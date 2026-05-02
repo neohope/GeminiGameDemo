@@ -19,7 +19,8 @@ class GomokuBoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boardSize = ResponsiveLayout.boardSize(context, maxSize: 550);
-    final cellSize = boardSize / 15;
+    const padding = 20.0;
+    final cellSize = (boardSize - padding * 2) / 14;
 
     return Center(
       child: Container(
@@ -31,11 +32,11 @@ class GomokuBoardWidget extends StatelessWidget {
           border: Border.all(color: Colors.brown, width: 2),
         ),
         child: GestureDetector(
-          onTapDown: enabled ? (details) => _handleTap(details, cellSize, boardSize, context) : null,
+          onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
           child: CustomPaint(
-            painter: _GomokuBoardPainter(cellSize: cellSize),
+            painter: _GomokuBoardPainter(cellSize: cellSize, padding: padding),
             child: Stack(
-              children: _buildPieces(cellSize),
+              children: _buildPieces(cellSize, padding),
             ),
           ),
         ),
@@ -43,31 +44,31 @@ class GomokuBoardWidget extends StatelessWidget {
     );
   }
 
-  void _handleTap(TapDownDetails details, double cellSize, double boardSize, BuildContext context) {
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-
-    final localPosition = renderBox.globalToLocal(details.globalPosition);
-    final col = (localPosition.dx / cellSize).round();
-    final row = (localPosition.dy / cellSize).round();
+  void _handleTap(TapDownDetails details, double cellSize, double padding) {
+    final localPosition = details.localPosition;
+    final col = ((localPosition.dx - padding) / cellSize).round();
+    final row = ((localPosition.dy - padding) / cellSize).round();
 
     if (col >= 0 && col < 15 && row >= 0 && row < 15) {
       onMove(row, col);
     }
   }
 
-  List<Widget> _buildPieces(double cellSize) {
+  List<Widget> _buildPieces(double cellSize, double padding) {
     final pieces = <Widget>[];
     for (int r = 0; r < 15; r++) {
       for (int c = 0; c < 15; c++) {
         final piece = board.getCell(r, c);
         if (piece != null) {
+          final centerX = padding + c * cellSize;
+          final centerY = padding + r * cellSize;
+          final pieceSize = cellSize * 0.85;
           pieces.add(Positioned(
-            left: c * cellSize - cellSize / 2 + cellSize / 2,
-            top: r * cellSize - cellSize / 2 + cellSize / 2,
+            left: centerX - pieceSize / 2,
+            top: centerY - pieceSize / 2,
             child: Container(
-              width: cellSize * 0.85,
-              height: cellSize * 0.85,
+              width: pieceSize,
+              height: pieceSize,
               decoration: BoxDecoration(
                 color: piece == blackPlayer ? Colors.black : Colors.white,
                 shape: BoxShape.circle,
@@ -91,8 +92,9 @@ class GomokuBoardWidget extends StatelessWidget {
 
 class _GomokuBoardPainter extends CustomPainter {
   final double cellSize;
+  final double padding;
 
-  _GomokuBoardPainter({required this.cellSize});
+  _GomokuBoardPainter({required this.cellSize, required this.padding});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -101,14 +103,15 @@ class _GomokuBoardPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (int i = 0; i < 15; i++) {
+      final pos = padding + i * cellSize;
       canvas.drawLine(
-        Offset(i * cellSize + cellSize / 2, cellSize / 2),
-        Offset(i * cellSize + cellSize / 2, size.height - cellSize / 2),
+        Offset(pos, padding),
+        Offset(pos, size.height - padding),
         paint,
       );
       canvas.drawLine(
-        Offset(cellSize / 2, i * cellSize + cellSize / 2),
-        Offset(size.width - cellSize / 2, i * cellSize + cellSize / 2),
+        Offset(padding, pos),
+        Offset(size.width - padding, pos),
         paint,
       );
     }
@@ -118,12 +121,13 @@ class _GomokuBoardPainter extends CustomPainter {
     ];
     final starPaint = Paint()..color = Colors.black54;
     for (final point in starPoints) {
-      final x = point[1] * cellSize + cellSize / 2;
-      final y = point[0] * cellSize + cellSize / 2;
+      final x = padding + point[1] * cellSize;
+      final y = padding + point[0] * cellSize;
       canvas.drawCircle(Offset(x, y), 3, starPaint);
     }
   }
 
   @override
-  bool shouldRepaint(_GomokuBoardPainter oldDelegate) => oldDelegate.cellSize != cellSize;
+  bool shouldRepaint(_GomokuBoardPainter oldDelegate) =>
+      oldDelegate.cellSize != cellSize || oldDelegate.padding != padding;
 }

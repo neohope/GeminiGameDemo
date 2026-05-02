@@ -19,7 +19,8 @@ class GoBoardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final boardSize = ResponsiveLayout.boardSize(context, maxSize: 550);
-    final cellSize = boardSize / 19;
+    const padding = 20.0;
+    final cellSize = (boardSize - padding * 2) / 18;
 
     return Center(
       child: Container(
@@ -31,40 +32,32 @@ class GoBoardWidget extends StatelessWidget {
           border: Border.all(color: Colors.brown, width: 2),
         ),
         child: GestureDetector(
-          onTapDown: enabled ? (details) => _handleTap(details, cellSize, boardSize, context) : null,
-          child: Stack(
-            children: [
-              _buildGridLines(cellSize),
-              _buildStarPoints(cellSize),
-              ..._buildPieces(cellSize),
-            ],
+          onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
+          child: CustomPaint(
+            painter: _GoGridPainter(cellSize: cellSize, padding: padding),
+            child: Stack(
+              children: [
+                _buildStarPoints(cellSize, padding),
+                ..._buildPieces(cellSize, padding),
+              ],
+            ),
           ),
         ),
       ),
     );
   }
 
-  void _handleTap(TapDownDetails details, double cellSize, double boardSize, BuildContext context) {
-    final renderBox = context.findRenderObject() as RenderBox?;
-    if (renderBox == null) return;
-
-    final localPosition = renderBox.globalToLocal(details.globalPosition);
-    final col = (localPosition.dx / cellSize).round();
-    final row = (localPosition.dy / cellSize).round();
+  void _handleTap(TapDownDetails details, double cellSize, double padding) {
+    final localPosition = details.localPosition;
+    final col = ((localPosition.dx - padding) / cellSize).round();
+    final row = ((localPosition.dy - padding) / cellSize).round();
 
     if (col >= 0 && col < 19 && row >= 0 && row < 19) {
       onMove(row, col);
     }
   }
 
-  Widget _buildGridLines(double cellSize) {
-    return CustomPaint(
-      size: Size(cellSize * 19, cellSize * 19),
-      painter: _GoGridPainter(cellSize: cellSize),
-    );
-  }
-
-  Widget _buildStarPoints(double cellSize) {
+  Widget _buildStarPoints(double cellSize, double padding) {
     final starPoints = [
       (3, 3), (9, 3), (15, 3),
       (3, 9), (9, 9), (15, 9),
@@ -75,9 +68,11 @@ class GoBoardWidget extends StatelessWidget {
       children: starPoints.map((point) {
         final r = point.$1;
         final c = point.$2;
+        final centerX = padding + c * cellSize;
+        final centerY = padding + r * cellSize;
         return Positioned(
-          left: c * cellSize - 3,
-          top: r * cellSize - 3,
+          left: centerX - 3,
+          top: centerY - 3,
           child: Container(
             width: 6,
             height: 6,
@@ -91,18 +86,21 @@ class GoBoardWidget extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildPieces(double cellSize) {
+  List<Widget> _buildPieces(double cellSize, double padding) {
     final pieces = <Widget>[];
     for (int r = 0; r < 19; r++) {
       for (int c = 0; c < 19; c++) {
         final piece = board.getPiece(r, c);
         if (piece != null) {
+          final centerX = padding + c * cellSize;
+          final centerY = padding + r * cellSize;
+          final pieceSize = cellSize * 0.85;
           pieces.add(Positioned(
-            left: c * cellSize - cellSize / 2 + cellSize / 2,
-            top: r * cellSize - cellSize / 2 + cellSize / 2,
+            left: centerX - pieceSize / 2,
+            top: centerY - pieceSize / 2,
             child: Container(
-              width: cellSize * 0.85,
-              height: cellSize * 0.85,
+              width: pieceSize,
+              height: pieceSize,
               decoration: BoxDecoration(
                 color: piece == blackPlayer ? Colors.black : Colors.white,
                 shape: BoxShape.circle,
@@ -126,8 +124,9 @@ class GoBoardWidget extends StatelessWidget {
 
 class _GoGridPainter extends CustomPainter {
   final double cellSize;
+  final double padding;
 
-  _GoGridPainter({required this.cellSize});
+  _GoGridPainter({required this.cellSize, required this.padding});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -136,19 +135,34 @@ class _GoGridPainter extends CustomPainter {
       ..strokeWidth = 1;
 
     for (int i = 0; i < 19; i++) {
+      final pos = padding + i * cellSize;
       canvas.drawLine(
-        Offset(i * cellSize + cellSize / 2, cellSize / 2),
-        Offset(i * cellSize + cellSize / 2, size.height - cellSize / 2),
+        Offset(pos, padding),
+        Offset(pos, size.height - padding),
         paint,
       );
       canvas.drawLine(
-        Offset(cellSize / 2, i * cellSize + cellSize / 2),
-        Offset(size.width - cellSize / 2, i * cellSize + cellSize / 2),
+        Offset(padding, pos),
+        Offset(size.width - padding, pos),
         paint,
       );
+    }
+
+    // 绘制星位
+    final starPoints = [
+      (3, 3), (9, 3), (15, 3),
+      (3, 9), (9, 9), (15, 9),
+      (3, 15), (9, 15), (15, 15),
+    ];
+    final starPaint = Paint()..color = Colors.black;
+    for (final point in starPoints) {
+      final x = padding + point.$2 * cellSize;
+      final y = padding + point.$1 * cellSize;
+      canvas.drawCircle(Offset(x, y), 3, starPaint);
     }
   }
 
   @override
-  bool shouldRepaint(_GoGridPainter oldDelegate) => oldDelegate.cellSize != cellSize;
+  bool shouldRepaint(_GoGridPainter oldDelegate) =>
+      oldDelegate.cellSize != cellSize || oldDelegate.padding != padding;
 }

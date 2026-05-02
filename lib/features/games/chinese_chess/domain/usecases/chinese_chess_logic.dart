@@ -104,4 +104,33 @@ class ChineseChessLogic {
     final nextPlayer = board.currentPlayer == redPlayer ? blackPlayer : redPlayer;
     return ChineseChessBoard(pieces: newPieces, currentPlayer: nextPlayer);
   }
+
+  static Player? getWinner(ChineseChessBoard board) {
+    bool hasRedKing = false;
+    bool hasBlackKing = false;
+    Piece? redKing;
+    Piece? blackKing;
+
+    for (final piece in board.pieces) {
+      if (piece.text == '帥') {
+        hasRedKing = true;
+        redKing = piece;
+      }
+      if (piece.text == '將') {
+        hasBlackKing = true;
+        blackKing = piece;
+      }
+    }
+
+    if (!hasRedKing) return blackPlayer;
+    if (!hasBlackKing) return redPlayer;
+
+    if (redKing != null && blackKing != null && redKing.x == blackKing.x) {
+      if (_isPathClear(board, redKing.x, redKing.y, redKing.x, blackKing.y)) {
+        return board.currentPlayer == redPlayer ? blackPlayer : redPlayer;
+      }
+    }
+
+    return null;
+  }
 }

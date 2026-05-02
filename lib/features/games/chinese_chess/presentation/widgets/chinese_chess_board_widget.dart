@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:neo_game_suit/core/utils/responsive_layout.dart';
 import 'package:neo_game_suit/features/games/chinese_chess/domain/entities/chinese_chess_board.dart';
 
 typedef CellTapCallback = void Function(int x, int y);
@@ -8,104 +7,103 @@ class ChineseChessBoardWidget extends StatelessWidget {
   final ChineseChessBoard board;
   final Piece? selectedPiece;
   final CellTapCallback onCellTap;
+  final bool enabled;
 
   const ChineseChessBoardWidget({
     super.key,
     required this.board,
     required this.selectedPiece,
     required this.onCellTap,
+    this.enabled = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 500);
-    final cellSize = boardSize / 9;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    double boardWidth = (screenWidth * 0.9).clamp(280.0, 500.0);
+    double cellSize = (boardWidth - 60.0) / 8;
+    double padding = cellSize * 0.5;
+    double boardHeight = cellSize * 9 + padding * 2;
+
+    if (boardHeight > screenHeight * 0.8) {
+      boardHeight = screenHeight * 0.8;
+      cellSize = (boardHeight - 60.0) / 9;
+      padding = cellSize * 0.5;
+      boardWidth = cellSize * 8 + padding * 2;
+    }
 
     return Center(
       child: Container(
-        width: boardSize,
-        height: boardSize * 10 / 9,
+        width: boardWidth,
+        height: boardHeight,
         decoration: BoxDecoration(
           color: const Color(0xFFF0D9B5),
           borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.brown, width: 2),
         ),
-        child: _buildBoard(context, cellSize),
+        child: GestureDetector(
+          onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
+          child: CustomPaint(
+            painter: _ChineseChessGridPainter(cellSize: cellSize, padding: padding),
+            child: Stack(
+              children: _buildPieces(cellSize, padding),
+            ),
+          ),
+        ),
       ),
     );
   }
 
-  Widget _buildBoard(BuildContext context, double cellSize) {
-    return Stack(
-      children: [
-        _buildGridLines(cellSize),
-        _buildRiverText(cellSize),
-        ..._buildPieces(context, cellSize),
-        _buildIntersections(cellSize),
-      ],
-    );
+  void _handleTap(TapDownDetails details, double cellSize, double padding) {
+    final localPosition = details.localPosition;
+    final x = ((localPosition.dx - padding) / cellSize).round();
+    final y = ((localPosition.dy - padding) / cellSize).round();
+
+    if (x >= 0 && x < 9 && y >= 0 && y < 10) {
+      onCellTap(x, y);
+    }
   }
 
-  Widget _buildGridLines(double cellSize) {
-    return CustomPaint(
-      size: Size(cellSize * 9, cellSize * 10),
-      painter: _ChineseChessGridPainter(cellSize: cellSize),
-    );
-  }
-
-  Widget _buildRiverText(double cellSize) {
-    return Positioned(
-      top: cellSize * 4.5,
-      left: cellSize * 1,
-      right: cellSize * 1,
-      child: Text(
-        '楚河 汉界',
-        textAlign: TextAlign.center,
-        style: TextStyle(fontSize: cellSize * 0.6, color: Colors.brown[400]),
-      ),
-    );
-  }
-
-  List<Widget> _buildPieces(BuildContext context, double cellSize) {
+  List<Widget> _buildPieces(double cellSize, double padding) {
     final widgets = <Widget>[];
     for (final piece in board.pieces) {
       final isSelected = selectedPiece != null && selectedPiece!.id == piece.id;
+      final centerX = padding + piece.x * cellSize;
+      final centerY = padding + piece.y * cellSize;
+      final pieceSize = cellSize * 0.85;
+
       widgets.add(Positioned(
-        left: piece.x * cellSize,
-        top: piece.y * cellSize,
+        left: centerX - pieceSize / 2,
+        top: centerY - pieceSize / 2,
         child: GestureDetector(
-          onTap: () => onCellTap(piece.x, piece.y),
+          onTap: enabled ? () => onCellTap(piece.x, piece.y) : null,
           child: Container(
-            width: cellSize,
-            height: cellSize,
+            width: pieceSize,
+            height: pieceSize,
             alignment: Alignment.center,
-            child: Container(
-              width: cellSize * 0.8,
-              height: cellSize * 0.8,
-              decoration: BoxDecoration(
-                color: Colors.amber[100],
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: isSelected ? Colors.blue : Colors.brown,
-                  width: isSelected ? 3 : 2,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.2),
-                    blurRadius: 3,
-                    offset: const Offset(1, 2),
-                  ),
-                ],
+            decoration: BoxDecoration(
+              color: Colors.amber[100],
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isSelected ? Colors.blue : Colors.brown,
+                width: isSelected ? 3 : 2,
               ),
-              child: Center(
-                child: Text(
-                  piece.text,
-                  style: TextStyle(
-                    fontSize: cellSize * 0.5,
-                    color: piece.color == redPlayer ? Colors.red : Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 3,
+                  offset: const Offset(1, 2),
                 ),
+              ],
+            ),
+            child: Text(
+              piece.text,
+              style: TextStyle(
+                fontSize: cellSize * 0.45,
+                color: piece.color == redPlayer ? Colors.red : Colors.black,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -114,31 +112,13 @@ class ChineseChessBoardWidget extends StatelessWidget {
     }
     return widgets;
   }
-
-  Widget _buildIntersections(double cellSize) {
-    final widgets = <Widget>[];
-    for (int y = 0; y < 10; y++) {
-      for (int x = 0; x < 9; x++) {
-        if (board.getPieceAt(x, y) == null) {
-          widgets.add(Positioned(
-            left: x * cellSize,
-            top: y * cellSize,
-            child: GestureDetector(
-              onTap: () => onCellTap(x, y),
-              child: SizedBox(width: cellSize, height: cellSize),
-            ),
-          ));
-        }
-      }
-    }
-    return Stack(children: widgets);
-  }
 }
 
 class _ChineseChessGridPainter extends CustomPainter {
   final double cellSize;
+  final double padding;
 
-  _ChineseChessGridPainter({required this.cellSize});
+  _ChineseChessGridPainter({required this.cellSize, required this.padding});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -146,36 +126,85 @@ class _ChineseChessGridPainter extends CustomPainter {
       ..color = Colors.brown
       ..strokeWidth = 1.5;
 
-    for (int y = 0; y < 10; y++) {
+    for (int i = 0; i < 10; i++) {
+      final y = padding + i * cellSize;
       canvas.drawLine(
-        Offset(0, y * cellSize),
-        Offset(8 * cellSize, y * cellSize),
+        Offset(padding, y),
+        Offset(padding + 8 * cellSize, y),
         paint,
       );
     }
 
-    for (int x = 0; x < 9; x++) {
+    for (int i = 0; i < 9; i++) {
+      final x = padding + i * cellSize;
       canvas.drawLine(
-        Offset(x * cellSize, 0),
-        Offset(x * cellSize, 4 * cellSize),
-        paint,
-      );
-      canvas.drawLine(
-        Offset(x * cellSize, 5 * cellSize),
-        Offset(x * cellSize, 9 * cellSize),
+        Offset(x, padding),
+        Offset(x, padding + 4 * cellSize),
         paint,
       );
     }
 
-    canvas.drawLine(Offset(0, 0), Offset(0, 9 * cellSize), paint);
-    canvas.drawLine(Offset(8 * cellSize, 0), Offset(8 * cellSize, 9 * cellSize), paint);
+    for (int i = 0; i < 9; i++) {
+      final x = padding + i * cellSize;
+      canvas.drawLine(
+        Offset(x, padding + 5 * cellSize),
+        Offset(x, padding + 9 * cellSize),
+        paint,
+      );
+    }
 
-    canvas.drawLine(Offset(3 * cellSize, 0), Offset(5 * cellSize, 2 * cellSize), paint);
-    canvas.drawLine(Offset(5 * cellSize, 0), Offset(3 * cellSize, 2 * cellSize), paint);
-    canvas.drawLine(Offset(3 * cellSize, 7 * cellSize), Offset(5 * cellSize, 9 * cellSize), paint);
-    canvas.drawLine(Offset(5 * cellSize, 7 * cellSize), Offset(3 * cellSize, 9 * cellSize), paint);
+    canvas.drawLine(
+      Offset(padding, padding),
+      Offset(padding, padding + 9 * cellSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(padding + 8 * cellSize, padding),
+      Offset(padding + 8 * cellSize, padding + 9 * cellSize),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(padding + 3 * cellSize, padding),
+      Offset(padding + 5 * cellSize, padding + 2 * cellSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(padding + 5 * cellSize, padding),
+      Offset(padding + 3 * cellSize, padding + 2 * cellSize),
+      paint,
+    );
+
+    canvas.drawLine(
+      Offset(padding + 3 * cellSize, padding + 7 * cellSize),
+      Offset(padding + 5 * cellSize, padding + 9 * cellSize),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(padding + 5 * cellSize, padding + 7 * cellSize),
+      Offset(padding + 3 * cellSize, padding + 9 * cellSize),
+      paint,
+    );
+
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: '楚河      汉界',
+        style: TextStyle(
+          color: Colors.brown,
+          fontSize: cellSize * 0.6,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    );
+    textPainter.layout();
+
+    final textX = (size.width - textPainter.width) / 2;
+    final textY = padding + 4 * cellSize + (cellSize - textPainter.height) / 2;
+    textPainter.paint(canvas, Offset(textX, textY));
   }
 
   @override
-  bool shouldRepaint(_ChineseChessGridPainter oldDelegate) => oldDelegate.cellSize != cellSize;
+  bool shouldRepaint(_ChineseChessGridPainter oldDelegate) =>
+      oldDelegate.cellSize != cellSize || oldDelegate.padding != padding;
 }

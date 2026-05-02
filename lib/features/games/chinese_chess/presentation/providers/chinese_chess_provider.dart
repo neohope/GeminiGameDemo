@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_game_suit/core/constants/app_constants.dart';
 import 'package:neo_game_suit/features/games/chinese_chess/domain/entities/chinese_chess_board.dart';
 import 'package:neo_game_suit/features/games/chinese_chess/domain/usecases/chinese_chess_logic.dart';
+import 'package:neo_game_suit/features/games/chinese_chess/domain/usecases/chinese_chess_ai.dart';
 import 'package:neo_game_suit/main.dart';
 
 class ChineseChessState {
@@ -9,12 +11,16 @@ class ChineseChessState {
   final GameMode gameMode;
   final List<ChineseChessBoard> history;
   final Piece? selectedPiece;
+  final Player? winner;
+  final bool isAiThinking;
 
   ChineseChessState({
     required this.board,
     this.gameMode = GameMode.hvh,
     required this.history,
     this.selectedPiece,
+    this.winner,
+    this.isAiThinking = false,
   });
 
   ChineseChessState copyWith({
@@ -22,12 +28,16 @@ class ChineseChessState {
     GameMode? gameMode,
     List<ChineseChessBoard>? history,
     Piece? selectedPiece,
+    Player? winner,
+    bool? isAiThinking,
   }) {
     return ChineseChessState(
       board: board ?? this.board,
       gameMode: gameMode ?? this.gameMode,
       history: history ?? this.history,
       selectedPiece: selectedPiece ?? this.selectedPiece,
+      winner: winner ?? this.winner,
+      isAiThinking: isAiThinking ?? this.isAiThinking,
     );
   }
 
@@ -51,9 +61,13 @@ class ChineseChessState {
 
 class ChineseChessNotifier extends Notifier<ChineseChessState> {
   static const String _gameId = 'chinese_chess';
+  Timer? _aiTimer;
 
   @override
   ChineseChessState build() {
+    ref.onDispose(() {
+      _aiTimer?.cancel();
+    });
     return _loadOrNew();
   }
 
@@ -71,6 +85,7 @@ class ChineseChessNotifier extends Notifier<ChineseChessState> {
   }
 
   void reset() {
+    _aiTimer?.cancel();
     final board = ChineseChessBoard.initial();
     state = ChineseChessState(board: board, history: [board], gameMode: state.gameMode);
   }
@@ -81,11 +96,15 @@ class ChineseChessNotifier extends Notifier<ChineseChessState> {
   }
 
   void selectCell(int x, int y) {
+    if (state.winner != null || state.isAiThinking) return;
+
+    if (state.gameMode == GameMode.hva && state.board.currentPlayer == blackPlayer) {
+      return;
+    }
+
     if (state.selectedPiece != null) {
       if (ChineseChessLogic.isValidMove(state.board, state.selectedPiece!, x, y)) {
-        final newBoard = ChineseChessLogic.makeMove(state.board, state.selectedPiece!, x, y);
-        final newHistory = List<ChineseChessBoard>.from(state.history)..add(newBoard);
-        state = state.copyWith(board: newBoard, history: newHistory, selectedPiece: null);
+        _makeMove(state.selectedPiece!, x, y);
         return;
       }
     }
@@ -97,10 +116,68 @@ class ChineseChessNotifier extends Notifier<ChineseChessState> {
     }
   }
 
+  void _makeMove(Piece piece, int toX, int toY) {
+    final newBoard = ChineseChessLogic.makeMove(state.board, piece, toX, toY);
+    final newHistory = List<ChineseChessBoard>.from(state.history)..add(newBoard);
+    final winner = ChineseChessLogic.getWinner(newBoard);
+    state = state.copyWith(
+      board: newBoard,
+      history: newHistory,
+      selectedPiece: null,
+      winner: winner,
+    );
+
+    if (winner == null && state.gameMode == GameMode.hva && state.board.currentPlayer == blackPlayer) {
+      _scheduleAiMove();
+    }
+  }
+
+  void _scheduleAiMove() {
+    _aiTimer?.cancel();
+    state = state.copyWith(isAiThinking: true);
+    _aiTimer = Timer(const Duration(milliseconds: 500), () {
+      if (!state.isAiThinking || state.winner != null) return;
+
+      final move = ChineseChessAI.findBestMove(state.board, blackPlayer);
+      if (move.length == 4) {
+        final piece = state.board.getPieceAt(move[0], move[1]);
+        if (piece != null) {
+          final newBoard = ChineseChessLogic.makeMove(state.board, piece, move[2], move[3]);
+          final newHistory = List<ChineseChessBoard>.from(state.history)..add(newBoard);
+          final winner = ChineseChessLogic.getWinner(newBoard);
+          state = state.copyWith(
+            board: newBoard,
+            history: newHistory,
+            isAiThinking: false,
+            winner: winner,
+          );
+        } else {
+          state = state.copyWith(isAiThinking: false);
+        }
+      } else {
+        state = state.copyWith(isAiThinking: false);
+      }
+    });
+  }
+
   void undo() {
+    _aiTimer?.cancel();
     if (state.history.length <= 1) return;
-    final newHistory = state.history.sublist(0, state.history.length - 1);
-    state = state.copyWith(board: newHistory.last, history: newHistory, selectedPiece: null);
+
+    List<ChineseChessBoard> newHistory;
+    if (state.gameMode == GameMode.hva && state.board.currentPlayer == redPlayer && state.history.length > 2) {
+      newHistory = state.history.sublist(0, state.history.length - 2);
+    } else {
+      newHistory = state.history.sublist(0, state.history.length - 1);
+    }
+
+    state = state.copyWith(
+      board: newHistory.last,
+      history: newHistory,
+      selectedPiece: null,
+      winner: null,
+      isAiThinking: false,
+    );
   }
 
   void save() {
@@ -108,6 +185,7 @@ class ChineseChessNotifier extends Notifier<ChineseChessState> {
   }
 
   void load() {
+    _aiTimer?.cancel();
     final saved = gameStorage.loadGame(_gameId);
     if (saved != null) {
       try {

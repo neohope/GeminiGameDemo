@@ -25,6 +25,7 @@ class ChineseChessPage extends ConsumerWidget {
               board: state.board,
               selectedPiece: state.selectedPiece,
               onCellTap: (x, y) => notifier.selectCell(x, y),
+              enabled: !state.isAiThinking && state.winner == null,
             ),
           ),
           const SizedBox(height: 16),
@@ -43,11 +44,26 @@ class ChineseChessPage extends ConsumerWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('当前: '),
-            Text(
-              state.board.currentPlayer == redPlayer ? '红方' : '黑方',
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            if (state.winner != null) ...[
+              Text(
+                state.winner == redPlayer ? '红方' : '黑方',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.green),
+              ),
+              const Text(' 获胜!', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+            ] else if (state.isAiThinking) ...[
+              const Text('AI 思考中...', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.orange)),
+            ] else ...[
+              const Text('当前: '),
+              Text(
+                state.board.currentPlayer == redPlayer ? '红方' : '黑方',
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+              if (state.gameMode == GameMode.hva)
+                Text(
+                  state.board.currentPlayer == redPlayer ? ' (玩家)' : ' (AI)',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+            ],
           ],
         ),
       ),
