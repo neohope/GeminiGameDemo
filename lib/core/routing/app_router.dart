@@ -9,6 +9,7 @@ import 'package:neo_game_suit/features/games/sudoku/presentation/pages/sudoku_pa
 import 'package:neo_game_suit/features/games/game2048/presentation/pages/game2048_page.dart';
 import 'package:neo_game_suit/features/games/snake/presentation/pages/snake_page.dart';
 import 'package:neo_game_suit/features/games/tictactoe/presentation/pages/tictactoe_page.dart';
+import 'package:neo_game_suit/features/games/reversi/presentation/pages/reversi_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -57,6 +58,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.ticTacToePath,
       name: 'tictactoe',
       builder: (context, state) => const TicTacToePage(),
+    ),
+    GoRoute(
+      path: AppConstants.reversiPath,
+      name: 'reversi',
+      builder: (context, state) => const ReversiPage(),
     ),
   ],
 );

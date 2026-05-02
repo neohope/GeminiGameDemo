@@ -81,6 +81,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Tic Tac Toe',
             onTap: () => context.push(AppConstants.ticTacToePath),
           ),
+          GameCard(
+            icon: '⚫',
+            title: '黑白棋',
+            subtitle: 'Reversi',
+            onTap: () => context.push(AppConstants.reversiPath),
+          ),
         ],
       ),
     );
