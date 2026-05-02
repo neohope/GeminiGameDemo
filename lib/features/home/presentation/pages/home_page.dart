@@ -105,6 +105,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Whack-a-Mole',
             onTap: () => context.push(AppConstants.whackAMolePath),
           ),
+          GameCard(
+            icon: '🐦',
+            title: 'Flappy Bird',
+            subtitle: 'Flappy Bird',
+            onTap: () => context.push(AppConstants.flappyBirdPath),
+          ),
         ],
       ),
     );
