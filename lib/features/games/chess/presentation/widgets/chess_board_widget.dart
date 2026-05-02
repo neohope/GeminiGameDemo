@@ -22,12 +22,32 @@ class ChessBoardWidget extends StatelessWidget {
     final cellSize = boardSize / 8;
 
     return Center(
-      child: Container(
-        width: boardSize,
-        height: boardSize,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: boardSize,
+          height: boardSize,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Stack(
+              children: [
+                _buildGrid(boardSize),
+                _buildPieces(cellSize),
+              ],
+            ),
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildGrid(double boardSize) {
+    final cellSize = boardSize / 8;
+    return CustomPaint(
+      size: Size(boardSize, boardSize),
+      child: SizedBox.expand(
         child: GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -47,7 +67,6 @@ class ChessBoardWidget extends StatelessWidget {
                 color: isSelected
                     ? Colors.blue[300]
                     : (isLight ? const Color(0xFFF0D9B5) : const Color(0xFFB58863)),
-                child: _buildPiece(row, col, cellSize),
               ),
             );
           },
@@ -56,19 +75,29 @@ class ChessBoardWidget extends StatelessWidget {
     );
   }
 
-  Widget? _buildPiece(int row, int col, double cellSize) {
-    final piece = board.getPiece(row, col);
-    if (piece == null) return null;
-
-    final unicode = _getUnicode(piece.type, piece.color);
-    final fontSize = cellSize * 0.8;
-
-    return Center(
-      child: Text(
-        unicode,
-        style: TextStyle(fontSize: fontSize),
-      ),
-    );
+  Widget _buildPieces(double cellSize) {
+    final pieces = <Widget>[];
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        final piece = board.getPiece(r, c);
+        if (piece != null) {
+          final unicode = _getUnicode(piece.type, piece.color);
+          final fontSize = cellSize * 0.8;
+          pieces.add(Positioned(
+            left: c * cellSize,
+            top: r * cellSize,
+            child: SizedBox(
+              width: cellSize,
+              height: cellSize,
+              child: Center(
+                child: Text(unicode, style: TextStyle(fontSize: fontSize)),
+              ),
+            ),
+          ));
+        }
+      }
+    }
+    return Stack(children: pieces);
   }
 
   String _getUnicode(PieceType type, Player color) {

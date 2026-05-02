@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:neo_game_suit/core/utils/responsive_layout.dart';
 import 'package:neo_game_suit/features/games/chinese_chess/domain/entities/chinese_chess_board.dart';
 
 typedef CellTapCallback = void Function(int x, int y);
@@ -19,36 +20,31 @@ class ChineseChessBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    double boardWidth = (screenWidth * 0.9).clamp(280.0, 500.0);
-    double cellSize = (boardWidth - 60.0) / 8;
-    double padding = cellSize * 0.5;
-    double boardHeight = cellSize * 9 + padding * 2;
-
-    if (boardHeight > screenHeight * 0.8) {
-      boardHeight = screenHeight * 0.8;
-      cellSize = (boardHeight - 60.0) / 9;
-      padding = cellSize * 0.5;
-      boardWidth = cellSize * 8 + padding * 2;
-    }
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 500);
+    const padding = 20.0;
+    final cellSize = (boardSize - padding * 2) / 8;
+    final boardHeight = cellSize * 9 + padding * 2;
 
     return Center(
-      child: Container(
-        width: boardWidth,
-        height: boardHeight,
-        decoration: BoxDecoration(
-          color: const Color(0xFFF0D9B5),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.brown, width: 2),
-        ),
-        child: GestureDetector(
-          onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
-          child: CustomPaint(
-            painter: _ChineseChessGridPainter(cellSize: cellSize, padding: padding),
-            child: Stack(
-              children: _buildPieces(cellSize, padding),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: boardSize,
+          height: boardHeight,
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFF0D9B5),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.brown, width: 2),
+            ),
+            child: GestureDetector(
+              onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
+              child: CustomPaint(
+                painter: _ChineseChessGridPainter(cellSize: cellSize, padding: padding),
+                child: Stack(
+                  children: _buildPieces(cellSize, padding),
+                ),
+              ),
             ),
           ),
         ),

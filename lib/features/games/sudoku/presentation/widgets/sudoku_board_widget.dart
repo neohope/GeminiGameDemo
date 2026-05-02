@@ -26,25 +26,30 @@ class SudokuBoardWidget extends StatelessWidget {
     final cellSize = boardSize / 9;
 
     return Center(
-      child: Container(
-        width: boardSize,
-        height: boardSize,
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(8),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: boardSize,
+          height: boardSize,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            _buildGridLines(cellSize),
-            _buildCells(context, cellSize),
-          ],
+            child: Stack(
+              children: [
+                _buildGridLines(cellSize),
+                _buildCells(context, cellSize),
+              ],
+            ),
+          ),
         ),
       ),
     );

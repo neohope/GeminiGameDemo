@@ -23,23 +23,28 @@ class GoBoardWidget extends StatelessWidget {
     final cellSize = (boardSize - padding * 2) / 18;
 
     return Center(
-      child: Container(
-        width: boardSize,
-        height: boardSize,
-        decoration: BoxDecoration(
-          color: const Color(0xFFDDB35C),
-          borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: Colors.brown, width: 2),
-        ),
-        child: GestureDetector(
-          onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
-          child: CustomPaint(
-            painter: _GoGridPainter(cellSize: cellSize, padding: padding),
-            child: Stack(
-              children: [
-                _buildStarPoints(cellSize, padding),
-                ..._buildPieces(cellSize, padding),
-              ],
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: boardSize,
+          height: boardSize,
+          child: Container(
+            decoration: BoxDecoration(
+              color: const Color(0xFFDDB35C),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Colors.brown, width: 2),
+            ),
+            child: GestureDetector(
+              onTapDown: enabled ? (details) => _handleTap(details, cellSize, padding) : null,
+              child: CustomPaint(
+                painter: _GoGridPainter(cellSize: cellSize, padding: padding),
+                child: Stack(
+                  children: [
+                    _buildStarPoints(cellSize, padding),
+                    ..._buildPieces(cellSize, padding),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
