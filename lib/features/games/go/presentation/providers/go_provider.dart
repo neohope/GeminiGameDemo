@@ -85,7 +85,7 @@ class GoNotifier extends Notifier<GoState> {
     if (!GoLogic.isValidMove(state.board, row, col)) return;
 
     final newBoard = GoLogic.makeMove(state.board, row, col);
-    if (identical(newBoard, state.board)) return;
+    if (newBoard == null) return;
 
     final newHistory = List<GoBoard>.from(state.history)..add(newBoard);
     state = state.copyWith(board: newBoard, history: newHistory);

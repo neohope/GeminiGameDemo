@@ -48,6 +48,7 @@ class ChineseChessLogic {
         if (toX < 3 || toX > 5) return false;
         if (piece.color == redPlayer && toY > 2) return false;
         if (piece.color == blackPlayer && toY < 7) return false;
+        if (_wouldCauseKingMeeting(board, piece, toX, toY)) return false;
         return true;
 
       case '炮':
@@ -73,6 +74,26 @@ class ChineseChessLogic {
       default:
         return false;
     }
+  }
+
+  static bool _wouldCauseKingMeeting(ChineseChessBoard board, Piece movingKing, int toX, int toY) {
+    final tempPieces = board.pieces.where((p) => p.id != movingKing.id).toList();
+    tempPieces.add(movingKing.copyWith(x: toX, y: toY));
+    final tempBoard = ChineseChessBoard(pieces: tempPieces, currentPlayer: board.currentPlayer);
+
+    Piece? redKing;
+    Piece? blackKing;
+    for (final p in tempBoard.pieces) {
+      if (p.text == '帥') redKing = p;
+      if (p.text == '將') blackKing = p;
+    }
+
+    if (redKing != null && blackKing != null && redKing.x == blackKing.x) {
+      if (_isPathClear(tempBoard, redKing.x, redKing.y, redKing.x, blackKing.y)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   static bool _isPathClear(ChineseChessBoard board, int x1, int y1, int x2, int y2) {

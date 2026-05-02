@@ -13,6 +13,7 @@ class GoBoard extends Equatable {
   final int blackCaptures;
   final int whiteCaptures;
   final bool lastPass;
+  final (int, int)? koPoint;
 
   GoBoard({
     required this.board,
@@ -20,6 +21,7 @@ class GoBoard extends Equatable {
     required this.blackCaptures,
     required this.whiteCaptures,
     required this.lastPass,
+    this.koPoint,
   }) : assert(board.length == boardSize, 'Board must be 19x19'),
        assert(board.every((row) => row.length == boardSize), 'Each row must have 19 cells');
 
@@ -42,6 +44,7 @@ class GoBoard extends Equatable {
     int? blackCaptures,
     int? whiteCaptures,
     bool? lastPass,
+    (int, int)? koPoint,
   }) {
     return GoBoard(
       board: board ?? _copyBoard(this.board),
@@ -49,6 +52,7 @@ class GoBoard extends Equatable {
       blackCaptures: blackCaptures ?? this.blackCaptures,
       whiteCaptures: whiteCaptures ?? this.whiteCaptures,
       lastPass: lastPass ?? this.lastPass,
+      koPoint: koPoint,
     );
   }
 
@@ -64,6 +68,8 @@ class GoBoard extends Equatable {
       'blackCaptures': blackCaptures,
       'whiteCaptures': whiteCaptures,
       'lastPass': lastPass,
+      'koPointRow': koPoint?.$1,
+      'koPointCol': koPoint?.$2,
     };
   }
 
@@ -72,15 +78,18 @@ class GoBoard extends Equatable {
     final parsedBoard = boardData.map((row) =>
       (row as List<dynamic>).map((cell) => cell as Player?).toList()
     ).toList();
+    final koPointRow = json['koPointRow'] as int?;
+    final koPointCol = json['koPointCol'] as int?;
     return GoBoard(
       board: parsedBoard,
       currentPlayer: json['currentPlayer'] as Player,
       blackCaptures: json['blackCaptures'] as int,
       whiteCaptures: json['whiteCaptures'] as int,
       lastPass: json['lastPass'] as bool,
+      koPoint: koPointRow != null && koPointCol != null ? (koPointRow, koPointCol) : null,
     );
   }
 
   @override
-  List<Object?> get props => [board, currentPlayer, blackCaptures, whiteCaptures, lastPass];
+  List<Object?> get props => [board, currentPlayer, blackCaptures, whiteCaptures, lastPass, koPoint];
 }
