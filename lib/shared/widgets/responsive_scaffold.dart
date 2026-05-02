@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:neo_game_suit/core/utils/responsive_layout.dart';
 
 class ResponsiveScaffold extends StatelessWidget {
@@ -7,6 +8,7 @@ class ResponsiveScaffold extends StatelessWidget {
   final List<Widget>? actions;
   final Widget? bottomNavigationBar;
   final Widget? floatingActionButton;
+  final bool showBackButton;
 
   const ResponsiveScaffold({
     super.key,
@@ -15,6 +17,7 @@ class ResponsiveScaffold extends StatelessWidget {
     this.actions,
     this.bottomNavigationBar,
     this.floatingActionButton,
+    this.showBackButton = true,
   });
 
   @override
@@ -25,10 +28,14 @@ class ResponsiveScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         actions: actions,
-        leading: Navigator.canPop(context)
+        leading: showBackButton
             ? IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  if (context.canPop()) {
+                    context.pop();
+                  }
+                },
               )
             : null,
       ),

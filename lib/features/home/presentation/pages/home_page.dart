@@ -13,6 +13,7 @@ class HomePage extends StatelessWidget {
     return ResponsiveScaffold(
       title: AppConstants.appName,
       body: _buildGameGrid(context),
+      showBackButton: false,
     );
   }
 
@@ -36,31 +37,31 @@ class HomePage extends StatelessWidget {
             icon: '⚫',
             title: '五子棋',
             subtitle: 'Gomoku',
-            onTap: () => context.go(AppConstants.gomokuPath),
+            onTap: () => context.push(AppConstants.gomokuPath),
           ),
           GameCard(
             icon: '帥',
             title: '中国象棋',
             subtitle: 'Chinese Chess',
-            onTap: () => context.go(AppConstants.chineseChessPath),
+            onTap: () => context.push(AppConstants.chineseChessPath),
           ),
           GameCard(
             icon: '弈',
             title: '围棋',
             subtitle: 'Go',
-            onTap: () => context.go(AppConstants.goPath),
+            onTap: () => context.push(AppConstants.goPath),
           ),
           GameCard(
             icon: '♔',
             title: '国际象棋',
             subtitle: 'Chess',
-            onTap: () => context.go(AppConstants.chessPath),
+            onTap: () => context.push(AppConstants.chessPath),
           ),
           GameCard(
             icon: '🔢',
             title: '数独',
             subtitle: 'Sudoku',
-            onTap: () => context.go(AppConstants.sudokuPath),
+            onTap: () => context.push(AppConstants.sudokuPath),
           ),
         ],
       ),
