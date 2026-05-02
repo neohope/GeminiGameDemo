@@ -27,9 +27,9 @@ class ReversiBoardWidget extends StatelessWidget {
           width: boardSize,
           height: boardSize,
           decoration: BoxDecoration(
-            color: const Color(0xFF2D5016),
+            color: const Color(0xFFC8E6C9),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF1A1A2E), width: 4),
+            border: Border.all(color: const Color(0xFF81C784), width: 4),
           ),
           child: Stack(
             children: [
@@ -53,7 +53,7 @@ class ReversiBoardWidget extends StatelessWidget {
           child: Container(
             width: 1,
             height: cellSize * 8,
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: 0.15),
           ),
         ),
       );
@@ -64,7 +64,7 @@ class ReversiBoardWidget extends StatelessWidget {
           child: Container(
             width: cellSize * 8,
             height: 1,
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: 0.15),
           ),
         ),
       );
@@ -115,11 +115,11 @@ class ReversiBoardWidget extends StatelessWidget {
         color: player == Player.black ? Colors.black : Colors.white,
         shape: BoxShape.circle,
         border: highlight
-            ? Border.all(color: const Color(0xFFE94560), width: 3)
-            : Border.all(color: Colors.black.withValues(alpha: 0.3), width: 1),
+            ? Border.all(color: const Color(0xFFFF5252), width: 3)
+            : Border.all(color: Colors.black.withValues(alpha: 0.15), width: 1),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
+            color: Colors.black.withValues(alpha: 0.15),
             blurRadius: 2,
             offset: const Offset(1, 1),
           ),
@@ -133,7 +133,7 @@ class ReversiBoardWidget extends StatelessWidget {
       width: cellSize * 0.3,
       height: cellSize * 0.3,
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.4),
+        color: const Color(0xFF4CAF50).withValues(alpha: 0.5),
         shape: BoxShape.circle,
       ),
     );
