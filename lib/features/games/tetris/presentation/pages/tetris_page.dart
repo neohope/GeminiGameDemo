@@ -17,99 +17,120 @@ class TetrisPage extends ConsumerWidget {
       title: '俄罗斯方块',
       body: Column(
         children: [
-          const SizedBox(height: 8),
-          // Top info area
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+          // Main game area with side panels
+          Expanded(
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    const Text(
-                      '分数',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                    Text(
-                      '${board.score}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                // Left info panel
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          const Text(
+                            '分数',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          Text(
+                            '${board.score}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                // Next piece preview
-                Column(
-                  children: [
-                    const Text(
-                      '下一个',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                    const SizedBox(height: 2),
-                    TetrisNextPieceWidget(board: board),
-                  ],
-                ),
-                Column(
-                  children: [
-                    const Text(
-                      '等级',
-                      style: TextStyle(fontSize: 11, color: Colors.grey),
-                    ),
-                    Text(
-                      '${board.level}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 24),
+                      Column(
+                        children: [
+                          const Text(
+                            '等级',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          Text(
+                            '${board.level}',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                ),
+                // Game board (center)
+                Expanded(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: TetrisBoardWidget(board: board),
+                      ),
+                      // Status messages
+                      if (board.status == GameStatus.ready)
+                        const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            '按开始键开始',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      if (board.status == GameStatus.paused)
+                        const Padding(
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            '已暂停',
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      if (board.status == GameStatus.gameOver)
+                        Padding(
+                          padding: const EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              const Text(
+                                '游戏结束！',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              Text('最终分数: ${board.score}'),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Right info panel (next piece)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Column(
+                        children: [
+                          const Text(
+                            '下一个',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                          const SizedBox(height: 8),
+                          TetrisNextPieceWidget(board: board),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 8),
-          // Game board
-          Expanded(
-            child: TetrisBoardWidget(board: board),
-          ),
-          // Status
-          if (board.status == GameStatus.ready)
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                '按开始键开始',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          if (board.status == GameStatus.paused)
-            const Padding(
-              padding: EdgeInsets.all(16),
-              child: Text(
-                '已暂停',
-                style: TextStyle(fontSize: 18),
-              ),
-            ),
-          if (board.status == GameStatus.gameOver)
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const Text(
-                    '游戏结束！',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
-                  ),
-                  Text('最终分数: ${board.score}'),
-                ],
-              ),
-            ),
           // Control buttons
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
               children: [
                 // Directional controls
@@ -141,10 +162,10 @@ class TetrisPage extends ConsumerWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 // Action buttons
                 Wrap(
-                  spacing: 4,
+                  spacing: 8,
                   runSpacing: 4,
                   alignment: WrapAlignment.center,
                   children: [
