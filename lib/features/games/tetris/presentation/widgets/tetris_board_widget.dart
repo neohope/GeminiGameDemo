@@ -12,7 +12,7 @@ class TetrisBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 250);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 350);
     final cellSize = boardSize / TetrisBoard.cols;
 
     return Center(

@@ -14,7 +14,7 @@ class WhackAMoleBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 350);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 450);
     final holeSize = boardSize / board.cols;
 
     return Center(

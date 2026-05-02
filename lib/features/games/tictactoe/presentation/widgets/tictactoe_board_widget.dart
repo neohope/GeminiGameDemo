@@ -14,7 +14,7 @@ class TicTacToeBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 300);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 450);
     final cellSize = boardSize / 3;
 
     return Center(

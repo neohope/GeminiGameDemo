@@ -50,7 +50,7 @@ class Game2048BoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 350);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 450);
     final tileSize = (boardSize - 40) / _boardSize;
 
     return Center(

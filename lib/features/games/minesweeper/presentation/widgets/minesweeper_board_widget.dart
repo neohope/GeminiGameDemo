@@ -33,7 +33,7 @@ class MinesweeperBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final maxBoardSize = ResponsiveLayout.boardSize(context, maxSize: 400);
+    final maxBoardSize = ResponsiveLayout.boardSize(context, maxSize: 550);
     final maxCellWidth = maxBoardSize / board.cols;
     final maxCellHeight = maxBoardSize / board.rows;
     final cellSize = maxCellWidth < maxCellHeight ? maxCellWidth : maxCellHeight;
