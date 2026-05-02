@@ -27,9 +27,9 @@ class ReversiBoardWidget extends StatelessWidget {
           width: boardSize,
           height: boardSize,
           decoration: BoxDecoration(
-            color: const Color(0xFFC8E6C9),
+            color: const Color(0xFFF0D9B5),
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: const Color(0xFF81C784), width: 4),
+            border: Border.all(color: Colors.brown, width: 2),
           ),
           child: Stack(
             children: [
