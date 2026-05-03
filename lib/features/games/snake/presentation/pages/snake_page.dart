@@ -81,7 +81,10 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildScoreBoard(context, board),
+                    Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: _buildScoreBoard(context, board),
+                  ),
                     Expanded(
                       child: Center(
                         child: SnakeBoardWidget(
@@ -179,11 +182,14 @@ class _SnakePageState extends ConsumerState<SnakePage> {
   Widget _buildScoreBoard(BuildContext context, SnakeBoard board) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          _ScoreBox(title: 'SCORE', value: board.score),
-        ],
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 80),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            _ScoreBox(title: 'SCORE', value: board.score),
+          ],
+        ),
       ),
     );
   }
