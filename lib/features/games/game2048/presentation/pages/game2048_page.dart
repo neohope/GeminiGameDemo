@@ -1,36 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_game_suit/shared/widgets/responsive_scaffold.dart';
 import 'package:neo_game_suit/features/games/game2048/domain/usecases/game2048_logic.dart';
 import 'package:neo_game_suit/features/games/game2048/presentation/providers/game2048_provider.dart';
 import 'package:neo_game_suit/features/games/game2048/presentation/widgets/game2048_board_widget.dart';
 
-class Game2048Page extends ConsumerWidget {
+class Game2048Page extends ConsumerStatefulWidget {
   const Game2048Page({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Game2048Page> createState() => _Game2048PageState();
+}
+
+class _Game2048PageState extends ConsumerState<Game2048Page> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final state = ref.watch(game2048Provider);
     final notifier = ref.read(game2048Provider.notifier);
 
     return ResponsiveScaffold(
       title: '2048',
-      body: Column(
-        children: [
-          const SizedBox(height: 16),
-          _buildScoreBoard(context, state, notifier),
-          Expanded(
-            child: Game2048BoardWidget(
-              board: state.board,
-              onMove: (direction) => notifier.move(direction),
+      body: Focus(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is! KeyDownEvent) return KeyEventResult.ignored;
+
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.arrowUp:
+            case LogicalKeyboardKey.keyW:
+              notifier.move(MoveDirection.up);
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowDown:
+            case LogicalKeyboardKey.keyS:
+              notifier.move(MoveDirection.down);
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowLeft:
+            case LogicalKeyboardKey.keyA:
+              notifier.move(MoveDirection.left);
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowRight:
+            case LogicalKeyboardKey.keyD:
+              notifier.move(MoveDirection.right);
+              return KeyEventResult.handled;
+            default:
+              return KeyEventResult.ignored;
+          }
+        },
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            _buildScoreBoard(context, state, notifier),
+            Expanded(
+              child: Game2048BoardWidget(
+                board: state.board,
+                onMove: (direction) {
+                  notifier.move(direction);
+                  _focusNode.requestFocus();
+                },
+              ),
             ),
-          ),
-          if (state.board.gameOver || state.board.isWin)
-            _buildGameOver(context, state, notifier),
-          const SizedBox(height: 16),
-          _buildControlBar(context, ref, state, notifier),
-          const SizedBox(height: 16),
-        ],
+            if (state.board.gameOver || state.board.isWin)
+              _buildGameOver(context, state, notifier),
+            const SizedBox(height: 16),
+            _buildControlBar(context, ref, state, notifier),
+            const SizedBox(height: 16),
+          ],
+        ),
       ),
     );
   }
@@ -91,22 +136,36 @@ class Game2048Page extends ConsumerWidget {
         runSpacing: 8,
         children: [
           ElevatedButton.icon(
-            onPressed: state.history.length <= 1 ? null : () => notifier.undo(),
+            onPressed: state.history.length <= 1
+                ? null
+                : () {
+                    notifier.undo();
+                    _focusNode.requestFocus();
+                  },
             icon: const Icon(Icons.undo),
             label: const Text('Undo'),
           ),
           ElevatedButton.icon(
-            onPressed: () => notifier.save(),
+            onPressed: () {
+              notifier.save();
+              _focusNode.requestFocus();
+            },
             icon: const Icon(Icons.save),
             label: const Text('Save'),
           ),
           ElevatedButton.icon(
-            onPressed: () => notifier.load(),
+            onPressed: () {
+              notifier.load();
+              _focusNode.requestFocus();
+            },
             icon: const Icon(Icons.folder_open),
             label: const Text('Load'),
           ),
           ElevatedButton.icon(
-            onPressed: () => notifier.reset(),
+            onPressed: () {
+              notifier.reset();
+              _focusNode.requestFocus();
+            },
             icon: const Icon(Icons.refresh),
             label: const Text('New Game'),
           ),
