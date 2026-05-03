@@ -24,7 +24,8 @@ class ReversiPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final board = ref.watch(reversiProvider);
     final notifier = ref.read(reversiProvider.notifier);
-    final canChangeMode = !notifier.hasGameStarted && board.status == GameStatus.playing;
+    final canChangeMode =
+        !notifier.hasGameStarted && board.status == GameStatus.playing;
 
     return ResponsiveScaffold(
       title: '黑白棋',
@@ -38,14 +39,16 @@ class ReversiPage extends ConsumerWidget {
             child: ReversiBoardWidget(
               board: board,
               onTileTap: (row, col) {
-                if (board.mode == GameMode.hva && board.currentPlayer != board.humanPlayer) {
+                if (board.mode == GameMode.hva &&
+                    board.currentPlayer != board.humanPlayer) {
                   return;
                 }
                 notifier.makeMove(row, col);
               },
             ),
           ),
-          if (board.status != GameStatus.playing) _buildGameOver(context, board, notifier),
+          if (board.status != GameStatus.playing)
+            _buildGameOver(context, board, notifier),
           const SizedBox(height: 16),
           _buildControlBar(context, notifier, board, canChangeMode),
           const SizedBox(height: 16),
@@ -83,12 +86,14 @@ class ReversiPage extends ConsumerWidget {
     if (board.status == GameStatus.playing) {
       final validMoves = ReversiLogic.getValidMoves(board, board.currentPlayer);
       if (validMoves.isEmpty) {
-        text = '${board.currentPlayer == Player.black ? 'Black' : 'White'} has no moves!';
+        text =
+            '${board.currentPlayer == Player.black ? 'Black' : 'White'} has no moves!';
       } else if (board.mode == GameMode.hva) {
         final isHumanTurn = board.currentPlayer == board.humanPlayer;
         text = isHumanTurn ? 'Your Turn' : 'AI Thinking...';
       } else {
-        text = '${board.currentPlayer == Player.black ? 'Black' : 'White'}\'s Turn';
+        text =
+            '${board.currentPlayer == Player.black ? 'Black' : 'White'}\'s Turn';
       }
     } else if (board.status == GameStatus.blackWon) {
       text = 'Black Wins!';
@@ -107,7 +112,11 @@ class ReversiPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildGameOver(BuildContext context, ReversiBoard board, ReversiNotifier notifier) {
+  Widget _buildGameOver(
+    BuildContext context,
+    ReversiBoard board,
+    ReversiNotifier notifier,
+  ) {
     String message;
     if (board.status == GameStatus.blackWon) {
       message = 'Black Wins!';
@@ -130,7 +139,12 @@ class ReversiPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, ReversiNotifier notifier, ReversiBoard board, bool canChangeMode) {
+  Widget _buildControlBar(
+    BuildContext context,
+    ReversiNotifier notifier,
+    ReversiBoard board,
+    bool canChangeMode,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
@@ -141,18 +155,9 @@ class ReversiPage extends ConsumerWidget {
           DropdownButton<String>(
             value: _getDropdownValue(board.mode, board.humanPlayer),
             items: const [
-              DropdownMenuItem(
-                value: 'hvh',
-                child: Text('双人对战'),
-              ),
-              DropdownMenuItem(
-                value: 'hva_black',
-                child: Text('人机对战 - 执黑'),
-              ),
-              DropdownMenuItem(
-                value: 'hva_white',
-                child: Text('人机对战 - 执白'),
-              ),
+              DropdownMenuItem(value: 'hvh', child: Text('人人对战')),
+              DropdownMenuItem(value: 'hva_black', child: Text('人机对战 - 执黑')),
+              DropdownMenuItem(value: 'hva_white', child: Text('人机对战 - 执白')),
             ],
             onChanged: canChangeMode
                 ? (value) {
@@ -167,7 +172,10 @@ class ReversiPage extends ConsumerWidget {
                 : null,
           ),
           ElevatedButton.icon(
-            onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
+            onPressed: () => notifier.reset(
+              mode: board.mode,
+              humanPlayer: board.humanPlayer,
+            ),
             icon: const Icon(Icons.refresh),
             label: const Text('New Game'),
           ),

@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:neo_game_suit/core/utils/responsive_layout.dart';
 import 'package:neo_game_suit/features/games/minesweeper/domain/entities/minesweeper_board.dart';
 
-const Color _uncoveredColor = Color(0xFFC0C0C0);
-const Color _coveredColor = Color(0xFF808080);
-const Color _flaggedColor = Color(0xFFFFD700);
-const Color _mineColor = Color(0xFFFF0000);
+const Color _uncoveredColor = Color(0xFFFAEBD7);
+const Color _coveredColor = Color(0xFFDEB887);
+const Color _flaggedColor = Color(0xFFFF8C00);
+const Color _mineColor = Color(0xFFFF4500);
 
 const List<Color> _numberColors = [
   Colors.transparent,
-  Colors.blue,
-  Colors.green,
-  Colors.red,
-  Colors.purple,
-  Colors.teal,
-  Colors.black,
-  Colors.grey,
-  Colors.orange,
+  Color(0xFF00BFFF),
+  Color(0xFF32CD32),
+  Color(0xFFFF6347),
+  Color(0xFFBA55D3),
+  Color(0xFF00CED1),
+  Color(0xFF8B008B),
+  Color(0xFFFF69B4),
+  Color(0xFFFFD700),
 ];
 
 class MinesweeperBoardWidget extends StatelessWidget {
@@ -43,9 +43,20 @@ class MinesweeperBoardWidget extends StatelessWidget {
         fit: BoxFit.contain,
         child: Container(
           decoration: BoxDecoration(
-            color: const Color(0xFF808080),
-            border: Border.all(color: const Color(0xFF404040), width: 4),
-            borderRadius: BorderRadius.circular(4),
+            gradient: const LinearGradient(
+              colors: [Color(0xFFE6E6FA), Color(0xFFB0C4DE)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            border: Border.all(color: const Color(0xFF4169E1), width: 5),
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF4169E1).withValues(alpha: 0.4),
+                blurRadius: 15,
+                spreadRadius: 3,
+              ),
+            ],
           ),
           child: Column(
             children: List.generate(board.rows, (row) {
@@ -93,7 +104,8 @@ class _CellWidget extends StatelessWidget {
         decoration: BoxDecoration(
           color: _getCellColor(),
           border: _getCellBorder(),
-          borderRadius: BorderRadius.circular(2),
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: _getBoxShadow(),
         ),
         child: Center(
           child: _getCellContent(),
@@ -114,13 +126,34 @@ class _CellWidget extends StatelessWidget {
     return _coveredColor;
   }
 
+  List<BoxShadow>? _getBoxShadow() {
+    if (cell.state == CellState.flagged) {
+      return [
+        BoxShadow(
+          color: _flaggedColor.withValues(alpha: 0.6),
+          blurRadius: 6,
+          spreadRadius: 2,
+        ),
+      ];
+    } else if (cell.state == CellState.uncovered && cell.hasMine) {
+      return [
+        BoxShadow(
+          color: _mineColor.withValues(alpha: 0.6),
+          blurRadius: 6,
+          spreadRadius: 2,
+        ),
+      ];
+    }
+    return null;
+  }
+
   Border? _getCellBorder() {
     if (cell.state == CellState.covered || cell.state == CellState.flagged) {
       return Border(
-        top: BorderSide(color: Colors.white.withValues(alpha: 0.6), width: 2),
-        left: BorderSide(color: Colors.white.withValues(alpha: 0.6), width: 2),
-        bottom: BorderSide(color: Colors.black.withValues(alpha: 0.6), width: 2),
-        right: BorderSide(color: Colors.black.withValues(alpha: 0.6), width: 2),
+        top: BorderSide(color: Colors.white.withValues(alpha: 0.9), width: 2.5),
+        left: BorderSide(color: Colors.white.withValues(alpha: 0.9), width: 2.5),
+        bottom: BorderSide(color: Colors.black.withValues(alpha: 0.25), width: 2.5),
+        right: BorderSide(color: Colors.black.withValues(alpha: 0.25), width: 2.5),
       );
     }
     return null;
@@ -128,10 +161,10 @@ class _CellWidget extends StatelessWidget {
 
   Widget? _getCellContent() {
     if (cell.state == CellState.flagged) {
-      return Icon(Icons.flag, size: cellSize * 0.6, color: Colors.red);
+      return Icon(Icons.flag, size: cellSize * 0.6, color: Colors.red[700]);
     } else if (cell.state == CellState.uncovered) {
       if (cell.hasMine) {
-        return Icon(Icons.radio_button_checked, size: cellSize * 0.6, color: Colors.black);
+        return Icon(Icons.radio_button_checked, size: cellSize * 0.6, color: Colors.black87);
       } else if (cell.adjacentMines > 0) {
         return Text(
           '${cell.adjacentMines}',

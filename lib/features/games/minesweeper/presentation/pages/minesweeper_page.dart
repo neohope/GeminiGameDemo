@@ -304,20 +304,31 @@ class _InfoBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: Colors.black87,
-        borderRadius: BorderRadius.circular(8),
+        gradient: const LinearGradient(
+          colors: [Color(0xFF87CEEB), Color(0xFF6A5ACD)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6A5ACD).withValues(alpha: 0.3),
+            blurRadius: 8,
+            spreadRadius: 1,
+          ),
+        ],
       ),
       child: Row(
         children: [
-          Icon(icon, color: Colors.red, size: 20),
-          const SizedBox(width: 8),
+          Icon(icon, color: Colors.white, size: 22),
+          const SizedBox(width: 10),
           Text(
             value,
             style: const TextStyle(
-              color: Colors.red,
-              fontSize: 20,
+              color: Colors.white,
+              fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
           ),

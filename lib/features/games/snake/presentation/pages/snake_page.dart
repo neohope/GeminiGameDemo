@@ -17,17 +17,6 @@ class _SnakePageState extends ConsumerState<SnakePage> {
   final FocusNode _focusNode = FocusNode();
 
   @override
-  void initState() {
-    super.initState();
-    // Request focus after build
-    Future.microtask(() {
-      if (mounted) {
-        _focusNode.requestFocus();
-      }
-    });
-  }
-
-  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
@@ -35,155 +24,165 @@ class _SnakePageState extends ConsumerState<SnakePage> {
 
   @override
   Widget build(BuildContext context) {
-    final asyncState = ref.watch(snakeProvider);
+    final board = ref.watch(snakeProvider);
+    final notifier = ref.read(snakeProvider.notifier);
 
     return ResponsiveScaffold(
       title: 'Snake',
-      body: asyncState.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(child: Text('Error: $error')),
-        data: (board) => KeyboardListener(
-          focusNode: _focusNode,
-          autofocus: true,
-          onKeyEvent: (event) {
-            if (event is! KeyDownEvent) return;
+      body: Focus(
+        focusNode: _focusNode,
+        autofocus: true,
+        onKeyEvent: (node, event) {
+          if (event is! KeyDownEvent) return KeyEventResult.ignored;
 
-            switch (event.logicalKey) {
-              case LogicalKeyboardKey.arrowUp:
-              case LogicalKeyboardKey.keyW:
-                ref.read(snakeProvider.notifier).changeDirection(Direction.up);
-                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                  ref.read(snakeProvider.notifier).start();
-                }
-              case LogicalKeyboardKey.arrowDown:
-              case LogicalKeyboardKey.keyS:
-                ref.read(snakeProvider.notifier).changeDirection(Direction.down);
-                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                  ref.read(snakeProvider.notifier).start();
-                }
-              case LogicalKeyboardKey.arrowLeft:
-              case LogicalKeyboardKey.keyA:
-                ref.read(snakeProvider.notifier).changeDirection(Direction.left);
-                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                  ref.read(snakeProvider.notifier).start();
-                }
-              case LogicalKeyboardKey.arrowRight:
-              case LogicalKeyboardKey.keyD:
-                ref.read(snakeProvider.notifier).changeDirection(Direction.right);
-                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                  ref.read(snakeProvider.notifier).start();
-                }
-              case LogicalKeyboardKey.space:
-                if (!board.isGameOver) {
-                  ref.read(snakeProvider.notifier).togglePause();
-                }
-            }
-          },
-          child: Column(
-            children: [
-              Expanded(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16),
-                      child: _buildScoreBoard(context, board),
-                    ),
-                    Expanded(
-                      child: Center(
-                        child: SnakeBoardWidget(
-                          board: board,
-                          onDirectionChange: (direction) {
-                            ref.read(snakeProvider.notifier).changeDirection(direction);
-                            if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                              ref.read(snakeProvider.notifier).start();
-                            }
-                          },
-                          onTap: () {
-                            if (!board.isGameOver) {
-                              ref.read(snakeProvider.notifier).togglePause();
-                            }
-                            // Request focus when tapping the game area
-                            _focusNode.requestFocus();
-                          },
-                        ),
+          switch (event.logicalKey) {
+            case LogicalKeyboardKey.arrowUp:
+            case LogicalKeyboardKey.keyW:
+              notifier.changeDirection(Direction.up);
+              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                notifier.start();
+              }
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowDown:
+            case LogicalKeyboardKey.keyS:
+              notifier.changeDirection(Direction.down);
+              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                notifier.start();
+              }
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowLeft:
+            case LogicalKeyboardKey.keyA:
+              notifier.changeDirection(Direction.left);
+              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                notifier.start();
+              }
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.arrowRight:
+            case LogicalKeyboardKey.keyD:
+              notifier.changeDirection(Direction.right);
+              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                notifier.start();
+              }
+              return KeyEventResult.handled;
+            case LogicalKeyboardKey.space:
+              if (!board.isGameOver) {
+                notifier.togglePause();
+              }
+              return KeyEventResult.handled;
+            default:
+              return KeyEventResult.ignored;
+          }
+        },
+        child: Column(
+          children: [
+            Expanded(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 16),
+                    child: _buildScoreBoard(context, board),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: SnakeBoardWidget(
+                        board: board,
+                        onDirectionChange: (direction) {
+                          notifier.changeDirection(direction);
+                          if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                            notifier.start();
+                          }
+                        },
+                        onTap: () {
+                          if (!board.isGameOver) {
+                            notifier.togglePause();
+                          }
+                          _focusNode.requestFocus();
+                        },
                       ),
                     ),
-                  ],
-                ),
-              ),
-              if (board.isGameOver) _buildGameOver(context, ref),
-              if (board.isPaused && !board.isGameOver) _buildPaused(context),
-              const SizedBox(height: 16),
-              // Directional controls
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _ControlButton(
-                      onTap: !board.isGameOver
-                          ? () {
-                              ref.read(snakeProvider.notifier).changeDirection(Direction.left);
-                              if (!board.isPaused && board.snake.length == 3) {
-                                ref.read(snakeProvider.notifier).start();
-                              }
-                              _focusNode.requestFocus();
-                            }
-                          : null,
-                      icon: Icons.keyboard_arrow_left,
-                    ),
-                    const SizedBox(width: 6),
-                    Column(
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16, bottom: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        _ControlButton(
-                          onTap: !board.isGameOver
-                              ? () {
-                                  ref.read(snakeProvider.notifier).changeDirection(Direction.up);
-                                  if (!board.isPaused && board.snake.length == 3) {
-                                    ref.read(snakeProvider.notifier).start();
-                                  }
-                                  _focusNode.requestFocus();
-                                }
-                              : null,
-                          icon: Icons.keyboard_arrow_up,
+                        SizedBox(
+                          width: 156,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              _ControlButton(
+                                onTap: !board.isGameOver
+                                    ? () {
+                                        notifier.changeDirection(Direction.up);
+                                        if (!board.isPaused && board.snake.length == 3) {
+                                          notifier.start();
+                                        }
+                                        _focusNode.requestFocus();
+                                      }
+                                    : null,
+                                icon: Icons.keyboard_arrow_up,
+                              ),
+                            ],
+                          ),
                         ),
                         const SizedBox(height: 2),
-                        _ControlButton(
-                          onTap: !board.isGameOver
-                              ? () {
-                                  ref.read(snakeProvider.notifier).changeDirection(Direction.down);
-                                  if (!board.isPaused && board.snake.length == 3) {
-                                    ref.read(snakeProvider.notifier).start();
-                                  }
-                                  _focusNode.requestFocus();
-                                }
-                              : null,
-                          icon: Icons.keyboard_arrow_down,
+                        Row(
+                          children: [
+                            _ControlButton(
+                              onTap: !board.isGameOver
+                                  ? () {
+                                      notifier.changeDirection(Direction.left);
+                                      if (!board.isPaused && board.snake.length == 3) {
+                                        notifier.start();
+                                      }
+                                      _focusNode.requestFocus();
+                                    }
+                                  : null,
+                              icon: Icons.keyboard_arrow_left,
+                            ),
+                            const SizedBox(width: 6),
+                            _ControlButton(
+                              onTap: !board.isGameOver
+                                  ? () {
+                                      notifier.changeDirection(Direction.down);
+                                      if (!board.isPaused && board.snake.length == 3) {
+                                        notifier.start();
+                                      }
+                                      _focusNode.requestFocus();
+                                    }
+                                  : null,
+                              icon: Icons.keyboard_arrow_down,
+                            ),
+                            const SizedBox(width: 6),
+                            _ControlButton(
+                              onTap: !board.isGameOver
+                                  ? () {
+                                      notifier.changeDirection(Direction.right);
+                                      if (!board.isPaused && board.snake.length == 3) {
+                                        notifier.start();
+                                      }
+                                      _focusNode.requestFocus();
+                                    }
+                                  : null,
+                              icon: Icons.keyboard_arrow_right,
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                    const SizedBox(width: 6),
-                    _ControlButton(
-                      onTap: !board.isGameOver
-                          ? () {
-                              ref.read(snakeProvider.notifier).changeDirection(Direction.right);
-                              if (!board.isPaused && board.snake.length == 3) {
-                                ref.read(snakeProvider.notifier).start();
-                              }
-                              _focusNode.requestFocus();
-                            }
-                          : null,
-                      icon: Icons.keyboard_arrow_right,
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-              const SizedBox(height: 8),
-              _buildControlBar(context, ref, board),
-              const SizedBox(height: 16),
-            ],
-          ),
+            ),
+            if (board.isGameOver) _buildGameOver(context, notifier),
+            if (board.isPaused && !board.isGameOver) _buildPaused(context),
+            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            _buildControlBar(context, notifier, board),
+            const SizedBox(height: 16),
+          ],
         ),
       ),
     );
@@ -204,7 +203,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
     );
   }
 
-  Widget _buildGameOver(BuildContext context, WidgetRef ref) {
+  Widget _buildGameOver(BuildContext context, SnakeNotifier notifier) {
     return Container(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -215,7 +214,10 @@ class _SnakePageState extends ConsumerState<SnakePage> {
           ),
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () => ref.read(snakeProvider.notifier).reset(),
+            onPressed: () {
+              notifier.reset();
+              _focusNode.requestFocus();
+            },
             icon: const Icon(Icons.refresh),
             label: const Text('Play Again'),
           ),
@@ -234,7 +236,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, WidgetRef ref, SnakeBoard board) {
+  Widget _buildControlBar(BuildContext context, SnakeNotifier notifier, SnakeBoard board) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
@@ -245,8 +247,8 @@ class _SnakePageState extends ConsumerState<SnakePage> {
           if (board.isGameOver || board.snake.length == 3)
             ElevatedButton.icon(
               onPressed: () {
-                ref.read(snakeProvider.notifier).reset();
-                ref.read(snakeProvider.notifier).start();
+                notifier.reset();
+                notifier.start();
                 _focusNode.requestFocus();
               },
               icon: const Icon(Icons.play_arrow),
@@ -255,7 +257,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
           if (!board.isGameOver && board.snake.length > 3)
             ElevatedButton.icon(
               onPressed: () {
-                ref.read(snakeProvider.notifier).togglePause();
+                notifier.togglePause();
                 _focusNode.requestFocus();
               },
               icon: Icon(board.isPaused ? Icons.play_arrow : Icons.pause),
@@ -263,7 +265,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
             ),
           ElevatedButton.icon(
             onPressed: () {
-              ref.read(snakeProvider.notifier).reset();
+              notifier.reset();
               _focusNode.requestFocus();
             },
             icon: const Icon(Icons.refresh),
@@ -284,17 +286,25 @@ class _ScoreBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF1A1A2E),
-        borderRadius: BorderRadius.circular(8),
+        color: const Color(0xFF1a1a2e),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: const Color(0xFF4ECDC4), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF4ECDC4).withValues(alpha: 0.3),
+            blurRadius: 10,
+            spreadRadius: 2,
+          ),
+        ],
       ),
       child: Column(
         children: [
           Text(
             title,
             style: const TextStyle(
-              color: Color(0xFFE94560),
+              color: Color(0xFF4ECDC4),
               fontSize: 12,
               fontWeight: FontWeight.bold,
             ),
@@ -302,7 +312,7 @@ class _ScoreBox extends StatelessWidget {
           Text(
             '$value',
             style: const TextStyle(
-              color: Colors.white,
+              color: Color(0xFFFFE66D),
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),

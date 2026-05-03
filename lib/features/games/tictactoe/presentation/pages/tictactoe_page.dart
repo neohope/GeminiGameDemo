@@ -23,7 +23,8 @@ class TicTacToePage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final board = ref.watch(ticTacToeProvider);
     final notifier = ref.read(ticTacToeProvider.notifier);
-    final canChangeMode = !notifier.hasGameStarted && board.status == GameStatus.playing;
+    final canChangeMode =
+        !notifier.hasGameStarted && board.status == GameStatus.playing;
 
     return ResponsiveScaffold(
       title: '井字棋',
@@ -35,14 +36,16 @@ class TicTacToePage extends ConsumerWidget {
             child: TicTacToeBoardWidget(
               board: board,
               onTileTap: (row, col) {
-                if (board.mode == GameMode.hva && board.currentPlayer != board.humanPlayer) {
+                if (board.mode == GameMode.hva &&
+                    board.currentPlayer != board.humanPlayer) {
                   return;
                 }
                 notifier.makeMove(row, col);
               },
             ),
           ),
-          if (board.status != GameStatus.playing) _buildGameOver(context, board, notifier),
+          if (board.status != GameStatus.playing)
+            _buildGameOver(context, board, notifier),
           const SizedBox(height: 16),
           _buildControlBar(context, notifier, board, canChangeMode),
           const SizedBox(height: 16),
@@ -56,7 +59,9 @@ class TicTacToePage extends ConsumerWidget {
     if (board.status == GameStatus.playing) {
       if (board.mode == GameMode.hva) {
         final isHumanTurn = board.currentPlayer == board.humanPlayer;
-        text = isHumanTurn ? '你的回合 (${board.currentPlayer == Player.x ? 'X' : 'O'})' : 'AI 思考中...';
+        text = isHumanTurn
+            ? '你的回合 (${board.currentPlayer == Player.x ? 'X' : 'O'})'
+            : 'AI 思考中...';
       } else {
         text = '${board.currentPlayer == Player.x ? 'X' : 'O'} 的回合';
       }
@@ -77,7 +82,11 @@ class TicTacToePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildGameOver(BuildContext context, TicTacToeBoard board, TicTacToeNotifier notifier) {
+  Widget _buildGameOver(
+    BuildContext context,
+    TicTacToeBoard board,
+    TicTacToeNotifier notifier,
+  ) {
     String message;
     if (board.status == GameStatus.xWon) {
       message = 'X 获胜！';
@@ -100,7 +109,12 @@ class TicTacToePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, TicTacToeNotifier notifier, TicTacToeBoard board, bool canChangeMode) {
+  Widget _buildControlBar(
+    BuildContext context,
+    TicTacToeNotifier notifier,
+    TicTacToeBoard board,
+    bool canChangeMode,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
@@ -111,18 +125,9 @@ class TicTacToePage extends ConsumerWidget {
           DropdownButton<String>(
             value: _getDropdownValue(board.mode, board.humanPlayer),
             items: const [
-              DropdownMenuItem(
-                value: 'hvh',
-                child: Text('双人对战'),
-              ),
-              DropdownMenuItem(
-                value: 'hva_x',
-                child: Text('人机对战 - 执 X'),
-              ),
-              DropdownMenuItem(
-                value: 'hva_o',
-                child: Text('人机对战 - 执 O'),
-              ),
+              DropdownMenuItem(value: 'hvh', child: Text('人人对战')),
+              DropdownMenuItem(value: 'hva_x', child: Text('人机对战 - 执 X')),
+              DropdownMenuItem(value: 'hva_o', child: Text('人机对战 - 执 O')),
             ],
             onChanged: canChangeMode
                 ? (value) {
@@ -137,7 +142,10 @@ class TicTacToePage extends ConsumerWidget {
                 : null,
           ),
           ElevatedButton.icon(
-            onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
+            onPressed: () => notifier.reset(
+              mode: board.mode,
+              humanPlayer: board.humanPlayer,
+            ),
             icon: const Icon(Icons.refresh),
             label: const Text('新游戏'),
           ),

@@ -42,15 +42,15 @@ class SnakeBoardWidget extends StatelessWidget {
             width: boardSize,
             height: boardSize,
             decoration: BoxDecoration(
-              color: const Color(0xFF1A1A2E),
-              border: Border.all(color: const Color(0xFF16213E), width: 2),
-              borderRadius: BorderRadius.circular(8),
+              color: const Color(0xFF1a1a2e),
+              border: Border.all(color: const Color(0xFF0f3460), width: 3),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
               children: [
                 _buildGrid(cellSize),
-                _buildSnake(cellSize),
                 _buildFood(cellSize),
+                _buildSnake(cellSize),
               ],
             ),
           ),
@@ -71,7 +71,7 @@ class SnakeBoardWidget extends StatelessWidget {
               width: cellSize,
               height: cellSize,
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF16213E).withValues(alpha: 0.3), width: 0.5),
+                border: Border.all(color: const Color(0xFF16213e).withValues(alpha: 0.4), width: 0.5),
               ),
             ),
           ),
@@ -95,8 +95,17 @@ class SnakeBoardWidget extends StatelessWidget {
             height: cellSize - 2,
             margin: const EdgeInsets.all(1),
             decoration: BoxDecoration(
-              color: isHead ? const Color(0xFFE94560) : const Color(0xFF0F3460),
-              borderRadius: BorderRadius.circular(4),
+              color: isHead ? const Color(0xFFFF6B6B) : const Color(0xFF4ECDC4),
+              borderRadius: BorderRadius.circular(8),
+              boxShadow: isHead
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFFFF6B6B).withValues(alpha: 0.6),
+                        blurRadius: 8,
+                        spreadRadius: 2,
+                      )
+                    ]
+                  : null,
             ),
             child: isHead
                 ? Center(
@@ -139,9 +148,16 @@ class SnakeBoardWidget extends StatelessWidget {
         width: cellSize - 4,
         height: cellSize - 4,
         margin: const EdgeInsets.all(2),
-        decoration: const BoxDecoration(
-          color: Color(0xFFE94560),
+        decoration: BoxDecoration(
+          color: const Color(0xFFFFE66D),
           shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFFFFE66D).withValues(alpha: 0.6),
+              blurRadius: 10,
+              spreadRadius: 3,
+            ),
+          ],
         ),
       ),
     );
