@@ -1,15 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:neo_game_suit/shared/widgets/responsive_scaffold.dart';
 import 'package:neo_game_suit/features/games/snake/domain/entities/snake_board.dart';
 import 'package:neo_game_suit/features/games/snake/presentation/providers/snake_provider.dart';
 import 'package:neo_game_suit/features/games/snake/presentation/widgets/snake_board_widget.dart';
 
-class SnakePage extends ConsumerWidget {
+class SnakePage extends ConsumerStatefulWidget {
   const SnakePage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<SnakePage> createState() => _SnakePageState();
+}
+
+class _SnakePageState extends ConsumerState<SnakePage> {
+  final FocusNode _focusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final asyncState = ref.watch(snakeProvider);
 
     return ResponsiveScaffold(
@@ -17,40 +31,85 @@ class SnakePage extends ConsumerWidget {
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
-        data: (board) => Column(
-          children: [
-            Expanded(
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildScoreBoard(context, board),
-                  Expanded(
-                    child: Center(
-                      child: SnakeBoardWidget(
-                        board: board,
-                        onDirectionChange: (direction) {
-                          ref.read(snakeProvider.notifier).changeDirection(direction);
-                          if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                            ref.read(snakeProvider.notifier).start();
-                          }
-                        },
-                        onTap: () {
-                          if (!board.isGameOver) {
-                            ref.read(snakeProvider.notifier).togglePause();
-                          }
-                        },
+        data: (board) => Focus(
+          focusNode: _focusNode,
+          autofocus: true,
+          onKeyEvent: (node, event) {
+            if (event is! KeyDownEvent) return KeyEventResult.ignored;
+
+            switch (event.logicalKey) {
+              case LogicalKeyboardKey.arrowUp:
+              case LogicalKeyboardKey.keyW:
+                ref.read(snakeProvider.notifier).changeDirection(Direction.up);
+                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                  ref.read(snakeProvider.notifier).start();
+                }
+                return KeyEventResult.handled;
+              case LogicalKeyboardKey.arrowDown:
+              case LogicalKeyboardKey.keyS:
+                ref.read(snakeProvider.notifier).changeDirection(Direction.down);
+                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                  ref.read(snakeProvider.notifier).start();
+                }
+                return KeyEventResult.handled;
+              case LogicalKeyboardKey.arrowLeft:
+              case LogicalKeyboardKey.keyA:
+                ref.read(snakeProvider.notifier).changeDirection(Direction.left);
+                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                  ref.read(snakeProvider.notifier).start();
+                }
+                return KeyEventResult.handled;
+              case LogicalKeyboardKey.arrowRight:
+              case LogicalKeyboardKey.keyD:
+                ref.read(snakeProvider.notifier).changeDirection(Direction.right);
+                if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                  ref.read(snakeProvider.notifier).start();
+                }
+                return KeyEventResult.handled;
+              case LogicalKeyboardKey.space:
+                if (!board.isGameOver) {
+                  ref.read(snakeProvider.notifier).togglePause();
+                }
+                return KeyEventResult.handled;
+              default:
+                return KeyEventResult.ignored;
+            }
+          },
+          child: Column(
+            children: [
+              Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildScoreBoard(context, board),
+                    Expanded(
+                      child: Center(
+                        child: SnakeBoardWidget(
+                          board: board,
+                          onDirectionChange: (direction) {
+                            ref.read(snakeProvider.notifier).changeDirection(direction);
+                            if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                              ref.read(snakeProvider.notifier).start();
+                            }
+                          },
+                          onTap: () {
+                            if (!board.isGameOver) {
+                              ref.read(snakeProvider.notifier).togglePause();
+                            }
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            if (board.isGameOver) _buildGameOver(context, ref),
-            if (board.isPaused && !board.isGameOver) _buildPaused(context),
-            const SizedBox(height: 16),
-            _buildControlBar(context, ref, board),
-            const SizedBox(height: 16),
-          ],
+              if (board.isGameOver) _buildGameOver(context, ref),
+              if (board.isPaused && !board.isGameOver) _buildPaused(context),
+              const SizedBox(height: 16),
+              _buildControlBar(context, ref, board),
+              const SizedBox(height: 16),
+            ],
+          ),
         ),
       ),
     );

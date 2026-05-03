@@ -23,7 +23,7 @@ class SnakeBoard {
     this.score = 0,
     this.isGameOver = false,
     this.isPaused = false,
-    this.speed = 200,
+    this.speed = 350,
   });
 
   factory SnakeBoard.initial() {
