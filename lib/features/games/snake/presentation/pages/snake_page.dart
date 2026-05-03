@@ -19,7 +19,6 @@ class SnakePage extends ConsumerWidget {
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (board) => Column(
           children: [
-            const SizedBox(height: 16),
             _buildScoreBoard(context, board),
             Expanded(
               child: SnakeBoardWidget(

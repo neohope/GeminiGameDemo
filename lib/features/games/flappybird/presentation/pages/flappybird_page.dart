@@ -17,7 +17,6 @@ class FlappyBirdPage extends ConsumerWidget {
       title: 'Flappy Bird',
       body: Column(
         children: [
-          const SizedBox(height: 16),
           _buildInfoBar(context, board),
           Expanded(
             child: const FlappyBirdGameWidget(),
