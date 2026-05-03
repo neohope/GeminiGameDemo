@@ -17,6 +17,17 @@ class _SnakePageState extends ConsumerState<SnakePage> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    // Request focus after build
+    Future.microtask(() {
+      if (mounted) {
+        _focusNode.requestFocus();
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
@@ -31,11 +42,11 @@ class _SnakePageState extends ConsumerState<SnakePage> {
       body: asyncState.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
-        data: (board) => Focus(
+        data: (board) => KeyboardListener(
           focusNode: _focusNode,
           autofocus: true,
-          onKeyEvent: (node, event) {
-            if (event is! KeyDownEvent) return KeyEventResult.ignored;
+          onKeyEvent: (event) {
+            if (event is! KeyDownEvent) return;
 
             switch (event.logicalKey) {
               case LogicalKeyboardKey.arrowUp:
@@ -44,35 +55,28 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                 if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
                   ref.read(snakeProvider.notifier).start();
                 }
-                return KeyEventResult.handled;
               case LogicalKeyboardKey.arrowDown:
               case LogicalKeyboardKey.keyS:
                 ref.read(snakeProvider.notifier).changeDirection(Direction.down);
                 if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
                   ref.read(snakeProvider.notifier).start();
                 }
-                return KeyEventResult.handled;
               case LogicalKeyboardKey.arrowLeft:
               case LogicalKeyboardKey.keyA:
                 ref.read(snakeProvider.notifier).changeDirection(Direction.left);
                 if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
                   ref.read(snakeProvider.notifier).start();
                 }
-                return KeyEventResult.handled;
               case LogicalKeyboardKey.arrowRight:
               case LogicalKeyboardKey.keyD:
                 ref.read(snakeProvider.notifier).changeDirection(Direction.right);
                 if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
                   ref.read(snakeProvider.notifier).start();
                 }
-                return KeyEventResult.handled;
               case LogicalKeyboardKey.space:
                 if (!board.isGameOver) {
                   ref.read(snakeProvider.notifier).togglePause();
                 }
-                return KeyEventResult.handled;
-              default:
-                return KeyEventResult.ignored;
             }
           },
           child: Column(
@@ -82,9 +86,9 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: _buildScoreBoard(context, board),
-                  ),
+                      padding: const EdgeInsets.only(top: 16),
+                      child: _buildScoreBoard(context, board),
+                    ),
                     Expanded(
                       child: Center(
                         child: SnakeBoardWidget(
@@ -99,6 +103,8 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                             if (!board.isGameOver) {
                               ref.read(snakeProvider.notifier).togglePause();
                             }
+                            // Request focus when tapping the game area
+                            _focusNode.requestFocus();
                           },
                         ),
                       ),
@@ -122,6 +128,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                               if (!board.isPaused && board.snake.length == 3) {
                                 ref.read(snakeProvider.notifier).start();
                               }
+                              _focusNode.requestFocus();
                             }
                           : null,
                       icon: Icons.keyboard_arrow_left,
@@ -136,6 +143,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                                   if (!board.isPaused && board.snake.length == 3) {
                                     ref.read(snakeProvider.notifier).start();
                                   }
+                                  _focusNode.requestFocus();
                                 }
                               : null,
                           icon: Icons.keyboard_arrow_up,
@@ -148,6 +156,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                                   if (!board.isPaused && board.snake.length == 3) {
                                     ref.read(snakeProvider.notifier).start();
                                   }
+                                  _focusNode.requestFocus();
                                 }
                               : null,
                           icon: Icons.keyboard_arrow_down,
@@ -162,6 +171,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                               if (!board.isPaused && board.snake.length == 3) {
                                 ref.read(snakeProvider.notifier).start();
                               }
+                              _focusNode.requestFocus();
                             }
                           : null,
                       icon: Icons.keyboard_arrow_right,
@@ -237,18 +247,25 @@ class _SnakePageState extends ConsumerState<SnakePage> {
               onPressed: () {
                 ref.read(snakeProvider.notifier).reset();
                 ref.read(snakeProvider.notifier).start();
+                _focusNode.requestFocus();
               },
               icon: const Icon(Icons.play_arrow),
               label: const Text('Start'),
             ),
           if (!board.isGameOver && board.snake.length > 3)
             ElevatedButton.icon(
-              onPressed: () => ref.read(snakeProvider.notifier).togglePause(),
+              onPressed: () {
+                ref.read(snakeProvider.notifier).togglePause();
+                _focusNode.requestFocus();
+              },
               icon: Icon(board.isPaused ? Icons.play_arrow : Icons.pause),
               label: Text(board.isPaused ? 'Resume' : 'Pause'),
             ),
           ElevatedButton.icon(
-            onPressed: () => ref.read(snakeProvider.notifier).reset(),
+            onPressed: () {
+              ref.read(snakeProvider.notifier).reset();
+              _focusNode.requestFocus();
+            },
             icon: const Icon(Icons.refresh),
             label: const Text('New Game'),
           ),
