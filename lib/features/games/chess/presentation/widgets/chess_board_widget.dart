@@ -81,19 +81,20 @@ class ChessBoardWidget extends StatelessWidget {
         final piece = board.getPiece(r, c);
         if (piece != null) {
           final unicode = _getUnicode(piece.type, piece.color);
+          final isWhite = piece.color == whitePlayer;
           pieces.add(Positioned(
             left: c * cellSize,
             top: r * cellSize,
-            child: SizedBox(
+            child: Container(
               width: cellSize,
               height: cellSize,
-              child: Center(
-                child: Text(
-                  unicode,
-                  style: TextStyle(
-                    fontSize: cellSize * 0.75,
-                    color: piece.color == whitePlayer ? Colors.white : Colors.black,
-                  ),
+              alignment: Alignment.center,
+              child: Text(
+                unicode,
+                style: TextStyle(
+                  fontSize: cellSize * 0.8,
+                  color: isWhite ? Colors.white : Colors.black,
+                  shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
                 ),
               ),
             ),
