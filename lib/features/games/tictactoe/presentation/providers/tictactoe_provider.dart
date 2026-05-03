@@ -8,6 +8,17 @@ class TicTacToeNotifier extends AutoDisposeNotifier<TicTacToeBoard> {
     return TicTacToeBoard.initial();
   }
 
+  bool get hasGameStarted {
+    for (int row = 0; row < boardSize; row++) {
+      for (int col = 0; col < boardSize; col++) {
+        if (state.board[row][col] != Player.none) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   void makeMove(int row, int col) {
     state = TicTacToeLogic.makeMove(state, row, col);
 
@@ -25,7 +36,21 @@ class TicTacToeNotifier extends AutoDisposeNotifier<TicTacToeBoard> {
   }
 
   void reset({GameMode mode = GameMode.hvh, Player humanPlayer = Player.x}) {
-    state = TicTacToeLogic.reset(mode: mode).copyWith(humanPlayer: humanPlayer);
+    final newBoard = TicTacToeLogic.reset(mode: mode).copyWith(humanPlayer: humanPlayer);
+    state = newBoard;
+
+    // If AI plays first
+    if (mode == GameMode.hva && humanPlayer == Player.o) {
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (state.status == GameStatus.playing) {
+          state = TicTacToeLogic.makeAiMove(state);
+        }
+      });
+    }
+  }
+
+  void setModeAndPlayer(GameMode mode, Player humanPlayer) {
+    reset(mode: mode, humanPlayer: humanPlayer);
   }
 }
 

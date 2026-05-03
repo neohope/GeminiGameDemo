@@ -9,10 +9,22 @@ import 'package:neo_game_suit/features/games/reversi/presentation/widgets/revers
 class ReversiPage extends ConsumerWidget {
   const ReversiPage({super.key});
 
+  // Helper to get dropdown value
+  String _getDropdownValue(GameMode mode, Player humanPlayer) {
+    if (mode == GameMode.hvh) {
+      return 'hvh';
+    } else if (humanPlayer == Player.black) {
+      return 'hva_black';
+    } else {
+      return 'hva_white';
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final board = ref.watch(reversiProvider);
     final notifier = ref.read(reversiProvider.notifier);
+    final canChangeMode = !notifier.hasGameStarted && board.status == GameStatus.playing;
 
     return ResponsiveScaffold(
       title: '黑白棋',
@@ -35,7 +47,7 @@ class ReversiPage extends ConsumerWidget {
           ),
           if (board.status != GameStatus.playing) _buildGameOver(context, board, notifier),
           const SizedBox(height: 16),
-          _buildControlBar(context, notifier, board),
+          _buildControlBar(context, notifier, board, canChangeMode),
           const SizedBox(height: 16),
         ],
       ),
@@ -118,68 +130,48 @@ class ReversiPage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, ReversiNotifier notifier, ReversiBoard board) {
+  Widget _buildControlBar(BuildContext context, ReversiNotifier notifier, ReversiBoard board, bool canChangeMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        runSpacing: 8,
         children: [
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => _showModeSelection(context, notifier),
-                icon: const Icon(Icons.settings),
-                label: const Text('Game Mode'),
+          DropdownButton<String>(
+            value: _getDropdownValue(board.mode, board.humanPlayer),
+            items: const [
+              DropdownMenuItem(
+                value: 'hvh',
+                child: Text('双人对战'),
               ),
-              ElevatedButton.icon(
-                onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
-                icon: const Icon(Icons.refresh),
-                label: const Text('New Game'),
+              DropdownMenuItem(
+                value: 'hva_black',
+                child: Text('人机对战 - 执黑'),
+              ),
+              DropdownMenuItem(
+                value: 'hva_white',
+                child: Text('人机对战 - 执白'),
               ),
             ],
+            onChanged: canChangeMode
+                ? (value) {
+                    if (value == 'hvh') {
+                      notifier.setModeAndPlayer(GameMode.hvh, Player.black);
+                    } else if (value == 'hva_black') {
+                      notifier.setModeAndPlayer(GameMode.hva, Player.black);
+                    } else if (value == 'hva_white') {
+                      notifier.setModeAndPlayer(GameMode.hva, Player.white);
+                    }
+                  }
+                : null,
+          ),
+          ElevatedButton.icon(
+            onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
+            icon: const Icon(Icons.refresh),
+            label: const Text('New Game'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showModeSelection(BuildContext context, ReversiNotifier notifier) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Select Game Mode'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('Human vs Human'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hvh);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Human vs AI (Play as Black)'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hva, humanPlayer: Player.black);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Human vs AI (Play as White)'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hva, humanPlayer: Player.white);
-                // AI plays first as black
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  notifier.makeMove(3, 4); // Or another valid opening
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -8,10 +8,22 @@ import 'package:neo_game_suit/features/games/tictactoe/presentation/widgets/tict
 class TicTacToePage extends ConsumerWidget {
   const TicTacToePage({super.key});
 
+  // Helper to get dropdown value
+  String _getDropdownValue(GameMode mode, Player humanPlayer) {
+    if (mode == GameMode.hvh) {
+      return 'hvh';
+    } else if (humanPlayer == Player.x) {
+      return 'hva_x';
+    } else {
+      return 'hva_o';
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final board = ref.watch(ticTacToeProvider);
     final notifier = ref.read(ticTacToeProvider.notifier);
+    final canChangeMode = !notifier.hasGameStarted && board.status == GameStatus.playing;
 
     return ResponsiveScaffold(
       title: '井字棋',
@@ -32,7 +44,7 @@ class TicTacToePage extends ConsumerWidget {
           ),
           if (board.status != GameStatus.playing) _buildGameOver(context, board, notifier),
           const SizedBox(height: 16),
-          _buildControlBar(context, notifier, board),
+          _buildControlBar(context, notifier, board, canChangeMode),
           const SizedBox(height: 16),
         ],
       ),
@@ -88,68 +100,48 @@ class TicTacToePage extends ConsumerWidget {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, TicTacToeNotifier notifier, TicTacToeBoard board) {
+  Widget _buildControlBar(BuildContext context, TicTacToeNotifier notifier, TicTacToeBoard board, bool canChangeMode) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
+      child: Wrap(
+        alignment: WrapAlignment.center,
+        spacing: 8,
+        runSpacing: 8,
         children: [
-          Wrap(
-            alignment: WrapAlignment.center,
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              ElevatedButton.icon(
-                onPressed: () => _showModeSelection(context, notifier),
-                icon: const Icon(Icons.settings),
-                label: const Text('游戏模式'),
+          DropdownButton<String>(
+            value: _getDropdownValue(board.mode, board.humanPlayer),
+            items: const [
+              DropdownMenuItem(
+                value: 'hvh',
+                child: Text('双人对战'),
               ),
-              ElevatedButton.icon(
-                onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
-                icon: const Icon(Icons.refresh),
-                label: const Text('新游戏'),
+              DropdownMenuItem(
+                value: 'hva_x',
+                child: Text('人机对战 - 执 X'),
+              ),
+              DropdownMenuItem(
+                value: 'hva_o',
+                child: Text('人机对战 - 执 O'),
               ),
             ],
+            onChanged: canChangeMode
+                ? (value) {
+                    if (value == 'hvh') {
+                      notifier.setModeAndPlayer(GameMode.hvh, Player.x);
+                    } else if (value == 'hva_x') {
+                      notifier.setModeAndPlayer(GameMode.hva, Player.x);
+                    } else if (value == 'hva_o') {
+                      notifier.setModeAndPlayer(GameMode.hva, Player.o);
+                    }
+                  }
+                : null,
+          ),
+          ElevatedButton.icon(
+            onPressed: () => notifier.reset(mode: board.mode, humanPlayer: board.humanPlayer),
+            icon: const Icon(Icons.refresh),
+            label: const Text('新游戏'),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showModeSelection(BuildContext context, TicTacToeNotifier notifier) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('选择游戏模式'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('双人对战'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hvh);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('人机对战（你执 X）'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hva, humanPlayer: Player.x);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('人机对战（你执 O）'),
-              onTap: () {
-                notifier.reset(mode: GameMode.hva, humanPlayer: Player.o);
-                // AI plays first as X
-                Future.delayed(const Duration(milliseconds: 300), () {
-                  notifier.makeMove(1, 1);
-                });
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
       ),
     );
   }

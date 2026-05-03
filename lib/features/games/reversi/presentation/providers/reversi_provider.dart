@@ -8,6 +8,18 @@ class ReversiNotifier extends AutoDisposeNotifier<ReversiBoard> {
     return ReversiBoard.initial();
   }
 
+  bool get hasGameStarted {
+    int filledCount = 0;
+    for (int row = 0; row < boardSize; row++) {
+      for (int col = 0; col < boardSize; col++) {
+        if (state.board[row][col] != Player.none) {
+          filledCount++;
+        }
+      }
+    }
+    return filledCount > 4; // initial position has 4 filled
+  }
+
   void makeMove(int row, int col) {
     state = ReversiLogic.makeMove(state, row, col);
 
@@ -25,7 +37,21 @@ class ReversiNotifier extends AutoDisposeNotifier<ReversiBoard> {
   }
 
   void reset({GameMode mode = GameMode.hvh, Player humanPlayer = Player.black}) {
-    state = ReversiLogic.reset(mode: mode).copyWith(humanPlayer: humanPlayer);
+    final newBoard = ReversiLogic.reset(mode: mode).copyWith(humanPlayer: humanPlayer);
+    state = newBoard;
+
+    // If AI plays first
+    if (mode == GameMode.hva && humanPlayer == Player.white) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (state.status == GameStatus.playing) {
+          state = ReversiLogic.makeAiMove(state);
+        }
+      });
+    }
+  }
+
+  void setModeAndPlayer(GameMode mode, Player humanPlayer) {
+    reset(mode: mode, humanPlayer: humanPlayer);
   }
 }
 
