@@ -55,7 +55,7 @@ class MinesweeperBoardWidget extends StatelessWidget {
                     cell: board.getCell(row, col),
                     cellSize: cellSize,
                     onTap: () => onUncover(row, col),
-                    onLongPress: () => onToggleFlag(row, col),
+                    onToggleFlag: () => onToggleFlag(row, col),
                   );
                 }),
               );
@@ -71,20 +71,21 @@ class _CellWidget extends StatelessWidget {
   final Cell cell;
   final double cellSize;
   final VoidCallback onTap;
-  final VoidCallback onLongPress;
+  final VoidCallback onToggleFlag;
 
   const _CellWidget({
     required this.cell,
     required this.cellSize,
     required this.onTap,
-    required this.onLongPress,
+    required this.onToggleFlag,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      onLongPress: onLongPress,
+      onLongPress: onToggleFlag,
+      onSecondaryTap: onToggleFlag,
       child: Container(
         width: cellSize - 2,
         height: cellSize - 2,

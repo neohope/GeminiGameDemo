@@ -89,17 +89,26 @@ class _MinesweeperPageState extends ConsumerState<MinesweeperPage> {
   Widget _buildInfoBar(BuildContext context, MinesweeperBoard board) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: Column(
         children: [
-          _InfoBox(
-            icon: Icons.flag,
-            value: '${board.mines - board.flaggedCount}',
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _InfoBox(
+                icon: Icons.flag,
+                value: '${board.mines - board.flaggedCount}',
+              ),
+              const SizedBox(width: 24),
+              _InfoBox(
+                icon: Icons.timer,
+                value: _formatTime(_elapsedSeconds),
+              ),
+            ],
           ),
-          const SizedBox(width: 24),
-          _InfoBox(
-            icon: Icons.timer,
-            value: _formatTime(_elapsedSeconds),
+          const SizedBox(height: 8),
+          const Text(
+            '左键点击揭开 | 右键/长按标旗',
+            style: TextStyle(fontSize: 12, color: Colors.grey),
           ),
         ],
       ),
