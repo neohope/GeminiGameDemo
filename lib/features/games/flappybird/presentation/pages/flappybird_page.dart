@@ -36,7 +36,7 @@ class FlappyBirdPage extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           _InfoBox(
             icon: Icons.score,
