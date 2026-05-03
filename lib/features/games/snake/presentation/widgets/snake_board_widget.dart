@@ -16,7 +16,7 @@ class SnakeBoardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 650);
+    final boardSize = ResponsiveLayout.boardSize(context, maxSize: 900);
     final cellSize = boardSize / board.width;
 
     return Center(

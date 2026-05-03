@@ -52,7 +52,7 @@ class SnakePage extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           _ScoreBox(title: 'SCORE', value: board.score),
         ],
