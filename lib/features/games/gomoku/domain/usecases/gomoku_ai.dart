@@ -71,7 +71,7 @@ class GomokuAI {
 
   static List<List<int>> getPossibleMoves(List<List<Player?>> board) {
     final moves = <List<int>>[];
-    const searchRadius = 2;
+    const searchRadius = 1; // Reduced from 2 to 1 for speed
 
     for (int r = 0; r < boardSize; r++) {
       for (int c = 0; c < boardSize; c++) {
@@ -146,7 +146,7 @@ class GomokuAI {
     int bestScore = -0x7ffffffff;
     List<int>? bestMove;
     final possibleMoves = getPossibleMoves(tempBoard);
-    const searchDepth = 3;
+    const searchDepth = 2; // Reduced from 3 to 2 for speed
 
     for (final move in possibleMoves) {
       final r = move[0];
