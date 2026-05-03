@@ -95,14 +95,11 @@ class ChessBoardWidget extends StatelessWidget {
                       isWhite ? Colors.white : Colors.black,
                       BlendMode.srcIn,
                     ),
-                    child: Padding(
-                      padding: EdgeInsets.only(left: isWhite ? 0 : 3),
-                      child: Text(
-                        unicode,
-                        style: TextStyle(
-                          fontSize: cellSize * 0.8,
-                          shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
-                        ),
+                    child: Text(
+                      unicode,
+                      style: TextStyle(
+                        fontSize: cellSize * 0.8,
+                        shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
                       ),
                     ),
                   ),
@@ -118,12 +115,12 @@ class ChessBoardWidget extends StatelessWidget {
 
   String _getUnicode(PieceType type, Player color) {
     switch (type) {
-      case king: return color == whitePlayer ? '♔' : '♚';
-      case queen: return color == whitePlayer ? '♕' : '♛';
-      case rook: return color == whitePlayer ? '♖' : '♜';
-      case bishop: return color == whitePlayer ? '♗' : '♝';
-      case knight: return color == whitePlayer ? '♘' : '♞';
-      case pawn: return color == whitePlayer ? '♙' : '♟';
+      case king: return '♔';
+      case queen: return '♕';
+      case rook: return '♖';
+      case bishop: return '♗';
+      case knight: return '♘';
+      case pawn: return '♙';
       default: return '';
     }
   }
