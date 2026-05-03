@@ -29,13 +29,13 @@ class TetrisLogic {
   static TetrisBoard hardDrop(TetrisBoard board) {
     var current = board;
     while (true) {
-      final next = moveDown(current);
-      if (identical(next, current)) {
+      final newPiece = current.currentPiece.copyWith(y: current.currentPiece.y + 1);
+      if (!_isValidPosition(current.board, newPiece)) {
         break;
       }
-      current = next;
+      current = moveDown(current);
     }
-    return current;
+    return _lockPiece(current);
   }
 
   static TetrisBoard rotate(TetrisBoard board) {

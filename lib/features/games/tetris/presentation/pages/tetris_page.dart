@@ -47,10 +47,9 @@ class _TetrisPageState extends ConsumerState<TetrisPage> {
               notifier.moveDown();
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowUp:
-            case LogicalKeyboardKey.space:
               notifier.rotate();
               return KeyEventResult.handled;
-            case LogicalKeyboardKey.keyD:
+            case LogicalKeyboardKey.space:
               notifier.hardDrop();
               return KeyEventResult.handled;
             default:
@@ -212,7 +211,7 @@ class _TetrisPageState extends ConsumerState<TetrisPage> {
                     alignment: WrapAlignment.center,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () => notifier.hardDrop(),
+                        onPressed: board.status == GameStatus.playing ? () => notifier.hardDrop() : null,
                         icon: const Icon(Icons.south, size: 18),
                         label: const Text('硬降', style: TextStyle(fontSize: 12)),
                       ),
