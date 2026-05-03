@@ -106,6 +106,67 @@ class _SnakePageState extends ConsumerState<SnakePage> {
               if (board.isGameOver) _buildGameOver(context, ref),
               if (board.isPaused && !board.isGameOver) _buildPaused(context),
               const SizedBox(height: 16),
+              // Directional controls
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _ControlButton(
+                      onTap: !board.isGameOver
+                          ? () {
+                              ref.read(snakeProvider.notifier).changeDirection(Direction.left);
+                              if (!board.isPaused && board.snake.length == 3) {
+                                ref.read(snakeProvider.notifier).start();
+                              }
+                            }
+                          : null,
+                      icon: Icons.keyboard_arrow_left,
+                    ),
+                    const SizedBox(width: 6),
+                    Column(
+                      children: [
+                        _ControlButton(
+                          onTap: !board.isGameOver
+                              ? () {
+                                  ref.read(snakeProvider.notifier).changeDirection(Direction.up);
+                                  if (!board.isPaused && board.snake.length == 3) {
+                                    ref.read(snakeProvider.notifier).start();
+                                  }
+                                }
+                              : null,
+                          icon: Icons.keyboard_arrow_up,
+                        ),
+                        const SizedBox(height: 2),
+                        _ControlButton(
+                          onTap: !board.isGameOver
+                              ? () {
+                                  ref.read(snakeProvider.notifier).changeDirection(Direction.down);
+                                  if (!board.isPaused && board.snake.length == 3) {
+                                    ref.read(snakeProvider.notifier).start();
+                                  }
+                                }
+                              : null,
+                          icon: Icons.keyboard_arrow_down,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 6),
+                    _ControlButton(
+                      onTap: !board.isGameOver
+                          ? () {
+                              ref.read(snakeProvider.notifier).changeDirection(Direction.right);
+                              if (!board.isPaused && board.snake.length == 3) {
+                                ref.read(snakeProvider.notifier).start();
+                              }
+                            }
+                          : null,
+                      icon: Icons.keyboard_arrow_right,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
               _buildControlBar(context, ref, board),
               const SizedBox(height: 16),
             ],
@@ -224,6 +285,38 @@ class _ScoreBox extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ControlButton extends StatelessWidget {
+  final VoidCallback? onTap;
+  final IconData icon;
+
+  const _ControlButton({required this.onTap, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(6),
+      child: SizedBox(
+        width: 48,
+        height: 48,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: onTap == null ? Colors.grey : const Color(0xFF333333),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Center(
+            child: Icon(
+              icon,
+              size: 28,
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
