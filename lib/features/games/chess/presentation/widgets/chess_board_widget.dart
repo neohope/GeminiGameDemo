@@ -82,6 +82,7 @@ class ChessBoardWidget extends StatelessWidget {
         if (piece != null) {
           final unicode = _getUnicode(piece.type, piece.color);
           final isWhite = piece.color == whitePlayer;
+          final offset = _getPieceOffset(piece.type, piece.color);
           pieces.add(Positioned(
             left: c * cellSize,
             top: r * cellSize,
@@ -89,20 +90,31 @@ class ChessBoardWidget extends StatelessWidget {
               child: SizedBox(
                 width: cellSize,
                 height: cellSize,
-                child: Center(
-                  child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(
-                      isWhite ? Colors.white : Colors.black,
-                      BlendMode.srcIn,
-                    ),
-                    child: Text(
-                      unicode,
-                      style: TextStyle(
-                        fontSize: cellSize * 0.8,
-                        shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Positioned(
+                      left: offset.dx,
+                      top: offset.dy,
+                      right: -offset.dx,
+                      bottom: -offset.dy,
+                      child: Center(
+                        child: ColorFiltered(
+                          colorFilter: ColorFilter.mode(
+                            isWhite ? Colors.white : Colors.black,
+                            BlendMode.srcIn,
+                          ),
+                          child: Text(
+                            unicode,
+                            style: TextStyle(
+                              fontSize: cellSize * 0.8,
+                              shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
@@ -113,14 +125,32 @@ class ChessBoardWidget extends StatelessWidget {
     return Stack(children: pieces);
   }
 
+  Offset _getPieceOffset(PieceType type, Player color) {
+    // 针对黑色棋子的微调偏移
+    if (color == blackPlayer) {
+      switch (type) {
+        case pawn: return const Offset(1.5, 0);
+        case king:
+        case queen:
+        case rook:
+        case bishop:
+        case knight:
+          return const Offset(1, 0);
+        default:
+          return Offset.zero;
+      }
+    }
+    return Offset.zero;
+  }
+
   String _getUnicode(PieceType type, Player color) {
     switch (type) {
-      case king: return '♔';
-      case queen: return '♕';
-      case rook: return '♖';
-      case bishop: return '♗';
-      case knight: return '♘';
-      case pawn: return '♙';
+      case king: return color == whitePlayer ? '♔' : '♚';
+      case queen: return color == whitePlayer ? '♕' : '♛';
+      case rook: return color == whitePlayer ? '♖' : '♜';
+      case bishop: return color == whitePlayer ? '♗' : '♝';
+      case knight: return color == whitePlayer ? '♘' : '♞';
+      case pawn: return color == whitePlayer ? '♙' : '♟';
       default: return '';
     }
   }
