@@ -86,20 +86,24 @@ class ChessBoardWidget extends StatelessWidget {
             left: c * cellSize,
             top: r * cellSize,
             child: IgnorePointer(
-              child: Container(
+              child: SizedBox(
                 width: cellSize,
                 height: cellSize,
-                alignment: Alignment.center,
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    isWhite ? Colors.white : Colors.black,
-                    BlendMode.srcIn,
-                  ),
-                  child: Text(
-                    unicode,
-                    style: TextStyle(
-                      fontSize: cellSize * 0.8,
-                      shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
+                child: Center(
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      isWhite ? Colors.white : Colors.black,
+                      BlendMode.srcIn,
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.only(left: isWhite ? 0 : 3),
+                      child: Text(
+                        unicode,
+                        style: TextStyle(
+                          fontSize: cellSize * 0.8,
+                          shadows: isWhite ? [Shadow(color: Colors.black.withValues(alpha: 0.5), blurRadius: 1)] : null,
+                        ),
+                      ),
                     ),
                   ),
                 ),
