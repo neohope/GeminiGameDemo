@@ -19,21 +19,30 @@ class SnakePage extends ConsumerWidget {
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (board) => Column(
           children: [
-            _buildScoreBoard(context, board),
             Expanded(
-              child: SnakeBoardWidget(
-                board: board,
-                onDirectionChange: (direction) {
-                  ref.read(snakeProvider.notifier).changeDirection(direction);
-                  if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
-                    ref.read(snakeProvider.notifier).start();
-                  }
-                },
-                onTap: () {
-                  if (!board.isGameOver) {
-                    ref.read(snakeProvider.notifier).togglePause();
-                  }
-                },
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildScoreBoard(context, board),
+                  Expanded(
+                    child: Center(
+                      child: SnakeBoardWidget(
+                        board: board,
+                        onDirectionChange: (direction) {
+                          ref.read(snakeProvider.notifier).changeDirection(direction);
+                          if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                            ref.read(snakeProvider.notifier).start();
+                          }
+                        },
+                        onTap: () {
+                          if (!board.isGameOver) {
+                            ref.read(snakeProvider.notifier).togglePause();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             if (board.isGameOver) _buildGameOver(context, ref),

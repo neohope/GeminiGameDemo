@@ -17,9 +17,18 @@ class FlappyBirdPage extends ConsumerWidget {
       title: 'Flappy Bird',
       body: Column(
         children: [
-          _buildInfoBar(context, board),
           Expanded(
-            child: const FlappyBirdGameWidget(),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildInfoBar(context, board),
+                Expanded(
+                  child: Center(
+                    child: const FlappyBirdGameWidget(),
+                  ),
+                ),
+              ],
+            ),
           ),
           if (board.status == GameStatus.ready) _buildReady(context, notifier),
           if (board.status == GameStatus.gameOver) _buildGameOver(context, board, notifier),
