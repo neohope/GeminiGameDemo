@@ -33,7 +33,7 @@ class ChessBoardWidget extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                _buildGrid(boardSize),
+                _buildGrid(boardSize, cellSize),
                 _buildPieces(cellSize),
               ],
             ),
@@ -43,7 +43,7 @@ class ChessBoardWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildGrid(double boardSize) {
+  Widget _buildGrid(double boardSize, double cellSize) {
     return CustomPaint(
       size: Size(boardSize, boardSize),
       child: SizedBox.expand(
@@ -81,7 +81,6 @@ class ChessBoardWidget extends StatelessWidget {
         final piece = board.getPiece(r, c);
         if (piece != null) {
           final unicode = _getUnicode(piece.type, piece.color);
-          final fontSize = cellSize * 0.8;
           pieces.add(Positioned(
             left: c * cellSize,
             top: r * cellSize,
@@ -92,7 +91,7 @@ class ChessBoardWidget extends StatelessWidget {
                 child: Text(
                   unicode,
                   style: TextStyle(
-                    fontSize: fontSize,
+                    fontSize: cellSize * 0.75,
                     color: piece.color == whitePlayer ? Colors.white : Colors.black,
                   ),
                 ),
