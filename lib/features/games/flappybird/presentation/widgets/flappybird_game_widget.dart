@@ -11,7 +11,7 @@ class FlappyBirdGameWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final board = ref.watch(flappyBirdProvider);
     final notifier = ref.read(flappyBirdProvider.notifier);
-    final maxSize = ResponsiveLayout.boardSize(context, maxSize: 700);
+    final maxSize = ResponsiveLayout.boardSize(context, maxSize: 900);
     final aspectRatio = board.worldWidth / board.worldHeight;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {

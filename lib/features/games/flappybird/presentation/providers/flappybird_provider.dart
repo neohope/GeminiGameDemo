@@ -7,7 +7,7 @@ class FlappyBirdNotifier extends AutoDisposeNotifier<FlappyBirdBoard> {
   Timer? _updateTimer;
   late DifficultySettings _currentDifficulty;
   static const double _defaultWorldWidth = 400;
-  static const double _defaultWorldHeight = 600;
+  static const double _defaultWorldHeight = 700; // Taller world
 
   @override
   FlappyBirdBoard build() {

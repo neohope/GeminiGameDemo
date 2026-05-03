@@ -93,7 +93,7 @@ const List<DifficultySettings> defaultDifficulties = [
   DifficultySettings(
     difficulty: Difficulty.easy,
     gravity: 0.4,
-    jumpForce: -8.5,
+    jumpForce: -7.0, // Less sensitive
     pipeSpeed: 3.5,
     pipeSpacing: 280,
     gapSize: 180,
@@ -101,7 +101,7 @@ const List<DifficultySettings> defaultDifficulties = [
   DifficultySettings(
     difficulty: Difficulty.medium,
     gravity: 0.5,
-    jumpForce: -9.0,
+    jumpForce: -7.5, // Less sensitive
     pipeSpeed: 4.5,
     pipeSpacing: 240,
     gapSize: 150,
@@ -109,7 +109,7 @@ const List<DifficultySettings> defaultDifficulties = [
   DifficultySettings(
     difficulty: Difficulty.hard,
     gravity: 0.6,
-    jumpForce: -9.5,
+    jumpForce: -8.0, // Less sensitive
     pipeSpeed: 5.5,
     pipeSpacing: 200,
     gapSize: 120,
