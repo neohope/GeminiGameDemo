@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
             onTap: () => context.push(AppConstants.reversiPath),
           ),
           GameCard(
-            icon: '⚪⚪⚪⚪⚪',
+            icon: '⚪',
             title: '五子棋',
             subtitle: 'Gomoku',
             onTap: () => context.push(AppConstants.gomokuPath),
