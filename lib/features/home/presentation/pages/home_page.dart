@@ -129,6 +129,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Fall 100 Floors',
             onTap: () => context.push(AppConstants.fall100Path),
           ),
+          GameCard(
+            icon: '🧱',
+            title: '打砖块',
+            subtitle: 'Breakout',
+            onTap: () => context.push(AppConstants.breakoutPath),
+          ),
         ],
       ),
     );
