@@ -6,6 +6,7 @@ import 'package:neo_game_suit/features/games/breakout/domain/usecases/breakout_l
 class BreakoutNotifier extends AutoDisposeNotifier<BreakoutBoard> {
   Timer? _timer;
   double _targetPaddleX = 0;
+  double _keyboardMoveDirection = 0;
 
   @override
   BreakoutBoard build() {
@@ -34,6 +35,11 @@ class BreakoutNotifier extends AutoDisposeNotifier<BreakoutBoard> {
   void _startTimer() {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      // Apply keyboard movement
+      if (_keyboardMoveDirection != 0) {
+        _targetPaddleX += _keyboardMoveDirection * 12;
+      }
+
       // Smooth paddle movement
       final diff = _targetPaddleX - state.paddle.x;
       final newPaddleX = state.paddle.x + diff * 0.3;
@@ -50,22 +56,20 @@ class BreakoutNotifier extends AutoDisposeNotifier<BreakoutBoard> {
     _targetPaddleX = x - state.paddle.width / 2;
   }
 
-  void movePaddleLeft() {
-    _targetPaddleX -= 10;
-  }
-
-  void movePaddleRight() {
-    _targetPaddleX += 10;
+  void setKeyboardMoveDirection(double direction) {
+    _keyboardMoveDirection = direction;
   }
 
   void reset() {
     _timer?.cancel();
+    _keyboardMoveDirection = 0;
     state = BreakoutLogic.reset(state);
     _targetPaddleX = state.paddle.x;
   }
 
   void nextLevel() {
     _timer?.cancel();
+    _keyboardMoveDirection = 0;
     state = BreakoutLogic.nextLevel(state);
     _targetPaddleX = state.paddle.x;
   }

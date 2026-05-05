@@ -33,23 +33,28 @@ class _BreakoutPageState extends ConsumerState<BreakoutPage> {
         focusNode: _focusNode,
         autofocus: true,
         onKeyEvent: (node, event) {
-          if (board.status == GameStatus.ready) {
-            if (event is KeyDownEvent) {
+          if (event is KeyDownEvent) {
+            if (board.status == GameStatus.ready) {
               notifier.startGame();
+            }
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                event.logicalKey == LogicalKeyboardKey.keyA) {
+              notifier.setKeyboardMoveDirection(-1);
               return KeyEventResult.handled;
             }
-          }
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
-                  event.logicalKey == LogicalKeyboardKey.keyA)) {
-            notifier.movePaddleLeft();
-            return KeyEventResult.handled;
-          }
-          if (event is KeyDownEvent &&
-              (event.logicalKey == LogicalKeyboardKey.arrowRight ||
-                  event.logicalKey == LogicalKeyboardKey.keyD)) {
-            notifier.movePaddleRight();
-            return KeyEventResult.handled;
+            if (event.logicalKey == LogicalKeyboardKey.arrowRight ||
+                event.logicalKey == LogicalKeyboardKey.keyD) {
+              notifier.setKeyboardMoveDirection(1);
+              return KeyEventResult.handled;
+            }
+          } else if (event is KeyUpEvent) {
+            if (event.logicalKey == LogicalKeyboardKey.arrowLeft ||
+                event.logicalKey == LogicalKeyboardKey.keyA ||
+                event.logicalKey == LogicalKeyboardKey.arrowRight ||
+                event.logicalKey == LogicalKeyboardKey.keyD) {
+              notifier.setKeyboardMoveDirection(0);
+              return KeyEventResult.handled;
+            }
           }
           return KeyEventResult.ignored;
         },
