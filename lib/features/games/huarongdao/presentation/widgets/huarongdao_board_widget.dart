@@ -31,8 +31,8 @@ class HuarongdaoBoardWidget extends StatelessWidget {
           child: Stack(
             children: [
               _buildGrid(boardSize, cellSize),
-              _buildPieces(boardSize, cellSize),
               _buildExitArea(boardSize, cellSize),
+              _buildPieces(boardSize, cellSize),
             ],
           ),
         ),
@@ -75,20 +75,22 @@ class HuarongdaoBoardWidget extends StatelessWidget {
     return Positioned(
       left: cellSize,
       top: cellSize * 4,
-      child: Container(
-        width: cellSize * 2,
-        height: cellSize,
-        decoration: BoxDecoration(
-          border: Border.all(color: const Color(0xFFFFD700), width: 2),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: const Center(
-          child: Text(
-            '出口',
-            style: TextStyle(
-              color: Color(0xFFFFD700),
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
+      child: IgnorePointer(
+        child: Container(
+          width: cellSize * 2,
+          height: cellSize,
+          decoration: BoxDecoration(
+            border: Border.all(color: const Color(0xFFFFD700), width: 2),
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: const Center(
+            child: Text(
+              '出口',
+              style: TextStyle(
+                color: Color(0xFFFFD700),
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
