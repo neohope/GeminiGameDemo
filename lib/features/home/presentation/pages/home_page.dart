@@ -123,6 +123,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Dino Runner',
             onTap: () => context.push(AppConstants.dinoPath),
           ),
+          GameCard(
+            icon: '⬇️',
+            title: '是男人就下100层',
+            subtitle: 'Fall 100 Floors',
+            onTap: () => context.push(AppConstants.fall100Path),
+          ),
         ],
       ),
     );

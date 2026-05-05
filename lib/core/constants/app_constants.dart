@@ -18,6 +18,7 @@ class AppConstants {
   static const String flappyBirdPath = '/flappybird';
   static const String tetrisPath = '/tetris';
   static const String dinoPath = '/dino';
+  static const String fall100Path = '/fall100';
 }
 
 enum GameMode {

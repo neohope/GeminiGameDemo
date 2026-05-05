@@ -16,6 +16,7 @@ import 'package:neo_game_suit/features/games/whackamole/presentation/pages/whack
 import 'package:neo_game_suit/features/games/flappybird/presentation/pages/flappybird_page.dart';
 import 'package:neo_game_suit/features/games/tetris/presentation/pages/tetris_page.dart';
 import 'package:neo_game_suit/features/games/dino/presentation/pages/dino_page.dart';
+import 'package:neo_game_suit/features/games/fall100/presentation/pages/fall100_page.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: AppConstants.homePath,
@@ -99,6 +100,11 @@ final GoRouter appRouter = GoRouter(
       path: AppConstants.dinoPath,
       name: 'dino',
       builder: (context, state) => const DinoPage(),
+    ),
+    GoRoute(
+      path: AppConstants.fall100Path,
+      name: 'fall100',
+      builder: (context, state) => const Fall100Page(),
     ),
   ],
 );
