@@ -39,6 +39,9 @@ class SnakeNotifier extends AutoDisposeNotifier<SnakeBoard> {
   }
 
   void start() {
+    if (!state.isPaused && _timer?.isActive == true) {
+      return;
+    }
     state = state.copyWith(isPaused: false);
     _startTimer();
   }

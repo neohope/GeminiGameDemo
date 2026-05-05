@@ -47,28 +47,28 @@ class _SnakePageState extends ConsumerState<SnakePage> {
             case LogicalKeyboardKey.arrowUp:
             case LogicalKeyboardKey.keyW:
               notifier.changeDirection(Direction.up);
-              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+              if (board.isPaused && !board.isGameOver) {
                 notifier.start();
               }
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowDown:
             case LogicalKeyboardKey.keyS:
               notifier.changeDirection(Direction.down);
-              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+              if (board.isPaused && !board.isGameOver) {
                 notifier.start();
               }
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowLeft:
             case LogicalKeyboardKey.keyA:
               notifier.changeDirection(Direction.left);
-              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+              if (board.isPaused && !board.isGameOver) {
                 notifier.start();
               }
               return KeyEventResult.handled;
             case LogicalKeyboardKey.arrowRight:
             case LogicalKeyboardKey.keyD:
               notifier.changeDirection(Direction.right);
-              if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+              if (board.isPaused && !board.isGameOver) {
                 notifier.start();
               }
               return KeyEventResult.handled;
@@ -97,7 +97,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                         board: board,
                         onDirectionChange: (direction) {
                           notifier.changeDirection(direction);
-                          if (!board.isPaused && !board.isGameOver && board.snake.length == 3) {
+                          if (board.isPaused && !board.isGameOver) {
                             notifier.start();
                           }
                         },
@@ -124,7 +124,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                                 onTap: !board.isGameOver
                                     ? () {
                                         notifier.changeDirection(Direction.up);
-                                        if (!board.isPaused && board.snake.length == 3) {
+                                        if (board.isPaused) {
                                           notifier.start();
                                         }
                                         _focusNode.requestFocus();
@@ -142,7 +142,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                               onTap: !board.isGameOver
                                   ? () {
                                       notifier.changeDirection(Direction.left);
-                                      if (!board.isPaused && board.snake.length == 3) {
+                                      if (board.isPaused) {
                                         notifier.start();
                                       }
                                       _focusNode.requestFocus();
@@ -155,7 +155,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                               onTap: !board.isGameOver
                                   ? () {
                                       notifier.changeDirection(Direction.down);
-                                      if (!board.isPaused && board.snake.length == 3) {
+                                      if (board.isPaused) {
                                         notifier.start();
                                       }
                                       _focusNode.requestFocus();
@@ -168,7 +168,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
                               onTap: !board.isGameOver
                                   ? () {
                                       notifier.changeDirection(Direction.right);
-                                      if (!board.isPaused && board.snake.length == 3) {
+                                      if (board.isPaused) {
                                         notifier.start();
                                       }
                                       _focusNode.requestFocus();

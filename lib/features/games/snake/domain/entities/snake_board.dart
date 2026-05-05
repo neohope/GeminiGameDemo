@@ -36,6 +36,7 @@ class SnakeBoard {
       snake: initialSnake,
       food: _generateFood(initialSnake, defaultWidth, defaultHeight),
       direction: Direction.right,
+      isPaused: true,
     );
   }
 
