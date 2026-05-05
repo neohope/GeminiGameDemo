@@ -135,8 +135,12 @@ class BreakoutBoard {
     final bricks = <Brick>[];
     const rows = 5;
     const cols = 10;
-    final brickWidth = (worldWidth - 40) / cols - 4;
+    const padding = 20.0;
+    const gap = 4.0;
     const brickHeight = 25.0;
+    final totalGapWidth = (cols - 1) * gap;
+    final brickWidth = (worldWidth - padding * 2 - totalGapWidth) / cols;
+    final startX = (worldWidth - (brickWidth * cols + totalGapWidth)) / 2;
     final colors = [
       Color(0xFFFF6B6B),
       Color(0xFFFFE66D),
@@ -147,8 +151,8 @@ class BreakoutBoard {
 
     for (int row = 0; row < rows; row++) {
       for (int col = 0; col < cols; col++) {
-        final x = 20 + col * (brickWidth + 4);
-        final y = 80.0 + row * (brickHeight + 4);
+        final x = startX + col * (brickWidth + gap);
+        final y = 80.0 + row * (brickHeight + gap);
         final type = row < 1
             ? BrickType.hard
             : BrickType.normal;
