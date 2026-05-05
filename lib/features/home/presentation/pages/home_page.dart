@@ -117,6 +117,12 @@ class HomePage extends StatelessWidget {
             subtitle: 'Tetris',
             onTap: () => context.push(AppConstants.tetrisPath),
           ),
+          GameCard(
+            icon: '🦖',
+            title: 'Chrome Dino',
+            subtitle: 'Dino Runner',
+            onTap: () => context.push(AppConstants.dinoPath),
+          ),
         ],
       ),
     );
