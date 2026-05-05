@@ -42,8 +42,8 @@ class SnakeBoardWidget extends StatelessWidget {
             width: boardSize,
             height: boardSize,
             decoration: BoxDecoration(
-              color: const Color(0xFF1a1a2e),
-              border: Border.all(color: const Color(0xFF0f3460), width: 3),
+              color: const Color(0xFF3d405b),
+              border: Border.all(color: const Color(0xFF81b29a), width: 3),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
@@ -71,7 +71,7 @@ class SnakeBoardWidget extends StatelessWidget {
               width: cellSize,
               height: cellSize,
               decoration: BoxDecoration(
-                border: Border.all(color: const Color(0xFF16213e).withValues(alpha: 0.4), width: 0.5),
+                border: Border.all(color: const Color(0xFF81b29a).withValues(alpha: 0.3), width: 0.5),
               ),
             ),
           ),
