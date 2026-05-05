@@ -17,6 +17,14 @@ class _SnakePageState extends ConsumerState<SnakePage> {
   final FocusNode _focusNode = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
   void dispose() {
     _focusNode.dispose();
     super.dispose();
@@ -179,8 +187,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
             if (board.isGameOver) _buildGameOver(context, notifier),
             if (board.isPaused && !board.isGameOver) _buildPaused(context),
             const SizedBox(height: 16),
-            const SizedBox(height: 8),
-            _buildControlBar(context, notifier, board),
+            _buildControlBar(context, ref, board, notifier),
             const SizedBox(height: 16),
           ],
         ),
@@ -209,7 +216,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
       child: Column(
         children: [
           const Text(
-            'Game Over!',
+            'Game Over',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
@@ -236,7 +243,7 @@ class _SnakePageState extends ConsumerState<SnakePage> {
     );
   }
 
-  Widget _buildControlBar(BuildContext context, SnakeNotifier notifier, SnakeBoard board) {
+  Widget _buildControlBar(BuildContext context, WidgetRef ref, SnakeBoard board, SnakeNotifier notifier) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Wrap(
