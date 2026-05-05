@@ -7,19 +7,24 @@ class BreakoutNotifier extends AutoDisposeNotifier<BreakoutBoard> {
   Timer? _timer;
   double _targetPaddleX = 0;
   double _keyboardMoveDirection = 0;
+  double _worldWidth = 600;
+  double _worldHeight = 800;
 
   @override
   BreakoutBoard build() {
     ref.onDispose(() {
       _timer?.cancel();
     });
-    return BreakoutBoard.initial(600, 800);
+    return BreakoutBoard.initial(_worldWidth, _worldHeight);
   }
 
   void setWorldSize(double width, double height) {
-    if (state.worldWidth != width || state.worldHeight != height) {
+    if (_worldWidth != width || _worldHeight != height) {
+      _worldWidth = width;
+      _worldHeight = height;
+      final currentHighScore = state.highScore;
       state = BreakoutBoard.initial(width, height).copyWith(
-        highScore: state.highScore,
+        highScore: currentHighScore,
       );
       _targetPaddleX = state.paddle.x;
     }
@@ -63,14 +68,23 @@ class BreakoutNotifier extends AutoDisposeNotifier<BreakoutBoard> {
   void reset() {
     _timer?.cancel();
     _keyboardMoveDirection = 0;
-    state = BreakoutLogic.reset(state);
+    final currentHighScore = state.highScore;
+    state = BreakoutBoard.initial(_worldWidth, _worldHeight).copyWith(
+      highScore: currentHighScore,
+    );
     _targetPaddleX = state.paddle.x;
   }
 
   void nextLevel() {
     _timer?.cancel();
     _keyboardMoveDirection = 0;
-    state = BreakoutLogic.nextLevel(state);
+    final currentHighScore = state.highScore;
+    final currentScore = state.score;
+    state = BreakoutBoard.initial(_worldWidth, _worldHeight).copyWith(
+      score: currentScore,
+      highScore: currentHighScore,
+      level: state.level + 1,
+    );
     _targetPaddleX = state.paddle.x;
   }
 }

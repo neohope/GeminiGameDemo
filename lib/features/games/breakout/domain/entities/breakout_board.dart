@@ -135,12 +135,13 @@ class BreakoutBoard {
     final bricks = <Brick>[];
     const rows = 5;
     const cols = 10;
-    const padding = 20.0;
+    const padding = 16.0;
     const gap = 4.0;
     const brickHeight = 25.0;
     final totalGapWidth = (cols - 1) * gap;
     final brickWidth = (worldWidth - padding * 2 - totalGapWidth) / cols;
-    final startX = (worldWidth - (brickWidth * cols + totalGapWidth)) / 2;
+    final totalBricksWidth = brickWidth * cols + totalGapWidth;
+    final startX = (worldWidth - totalBricksWidth) / 2;
     final colors = [
       Color(0xFFFF6B6B),
       Color(0xFFFFE66D),
